@@ -27,8 +27,8 @@ class MapController extends Controller
                     "type" => "Feature", 
                     "properties" => [
                         "Provinsi" => $json["province"],
-                        "Kecamatan" => $json["district"],
-                        "Kelurahan" => $json["sub_district"], 
+                        "Kabupaten" => $json["district"],
+                        "Kecamatan" => $json["sub_district"], 
                         "Desa" => $json["village"]
                     ],
                     "geometry" => [

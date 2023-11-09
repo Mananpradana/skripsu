@@ -36,8 +36,8 @@ export default {
             return (feature, layer) => {
                 layer.bindTooltip(
                 "<div>Provinsi:" + feature.properties.Provinsi + "</div>" +
+                "<div>Kabupaten: " +feature.properties.Kabupaten +"</div>" +
                 "<div>Kecamatan: " +feature.properties.Kecamatan +"</div>" +
-                "<div>Kelurahan: " +feature.properties.Kelurahan +"</div>" +
                 "<div>Desa: " +feature.properties.Desa +"</div>",
                 { permanent: false, sticky: true }
                 );
