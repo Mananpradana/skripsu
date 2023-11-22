@@ -26,6 +26,7 @@ class MapController extends Controller
                 $feature = [
                     "type" => "Feature", 
                     "properties" => [
+                        "id" => $json['id'],
                         "Provinsi" => $json["province"],
                         "Kabupaten" => $json["district"],
                         "Kecamatan" => $json["sub_district"], 

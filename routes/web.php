@@ -26,9 +26,9 @@ Route::get('/main', function () {
     return view('main');
 });
 
-Route::get('/lokasi', [App\Http\Controllers\AdminController::class, 'index']);
-Route::get('/lokasi/tambah', [App\Http\Controllers\AdminController::class, 'tambahLokasi']);
-Route::get('/lokasi/coordinateLocationExamplate', [App\Http\Controllers\AdminController::class, 'contohJsonLokasi'])->name('coordinateExample');
+Route::get('/lokasi', [App\Http\Controllers\Admin\LokasiController::class, 'index']);
+Route::get('/lokasi/tambah', [App\Http\Controllers\Admin\LokasiController::class, 'tambahLokasi']);
+Route::get('/lokasi/coordinateLocationExamplate', [App\Http\Controllers\Admin\LokasiController::class, 'contohJsonLokasi'])->name('coordinateExample');
 
 Auth::routes();
 

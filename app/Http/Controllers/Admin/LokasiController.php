@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
-class AdminController extends Controller
+class LokasiController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
@@ -40,7 +41,33 @@ class AdminController extends Controller
 
     public function index()
     {
-        return view('lokasi.index_lokasi');
+        $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');
+
+        $geojson = \json_decode($geoJsonRaw, true);
+    
+        $location = [];
+        foreach($geojson as $json) {
+            $feature = [];
+
+            if($json["sub_district"] === 'TABIR SELATAN') {                
+            
+                $feature = [                    
+                    "id" => $json["id"],
+                    "Provinsi" => $json["province"],
+                    "Kabupaten" => $json["district"],
+                    "Kecamatan" => $json["sub_district"], 
+                    "Desa" => $json["village"],                    
+                    "coordinates" => []                    
+                ];
+
+                $feature["coordinates"] = [$json["border"]];
+
+                $location[] = $feature;
+            }
+                        
+        }    
+        $data['lokasi'] = $location;
+        return view('lokasi.index_lokasi', $data);
     }
 
     public function tambahLokasi()

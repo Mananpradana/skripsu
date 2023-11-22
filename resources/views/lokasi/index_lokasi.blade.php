@@ -13,13 +13,35 @@
                     <div class="container">
                         
                         <div class="col position-relative">
-                            <button class="btn btn-danger position-absolute end-0">
+                            <!-- <button class="btn btn-danger position-absolute end-0">
                                 Tambah Lokasi
-                            </button>
+                            </button> -->
+                            
+                        </div>
 
-                            <h3>
-                                Ini adalah halaman lokasi
-                            </h3>
+                        <div class="col-12 position-relative" >
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">#ID</th>                                    
+                                    <th scope="col">Provinsi</th>
+                                    <th scope="col">Kabupaten</th>
+                                    <th scope="col">Kecamatan</th>
+                                    <th scope="col">Desa</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($lokasi as $indexLocation => $l)
+                                        <tr>
+                                            <th scope="row">{{ $l['id'] }}</th>                                            
+                                            <td>{{ $l['Provinsi'] }}</td>
+                                            <td>{{ $l['Kabupaten'] }}</td>
+                                            <td>{{ $l['Kecamatan'] }}</td>
+                                            <td>{{ $l['Desa'] }}</td>
+                                        </tr>    
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                         
                     </div>

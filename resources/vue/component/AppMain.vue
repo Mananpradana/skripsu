@@ -35,6 +35,7 @@ export default {
         onEachFeatureFunction() {           
             return (feature, layer) => {
                 layer.bindTooltip(
+                "<div>ID:" + feature.properties.id + "</div>" +
                 "<div>Provinsi:" + feature.properties.Provinsi + "</div>" +
                 "<div>Kabupaten: " +feature.properties.Kabupaten +"</div>" +
                 "<div>Kecamatan: " +feature.properties.Kecamatan +"</div>" +
