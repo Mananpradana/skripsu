@@ -40,6 +40,23 @@ class LokasiController extends Controller
     }
 
     public function index()
+    {       
+        $data['lokasi'] = self::getAllLocation();
+        return view('lokasi.index_lokasi', $data);
+    }
+
+    public function tambahLokasi()
+    {
+        return view('lokasi.tambah_lokasi');
+    }
+
+    public function contohJsonLokasi()
+    {
+        $json_coordinate_example = file_get_contents(\public_path('json_coordinate_example.json'));
+        echo $json_coordinate_example;
+    }
+
+    public static function getAllLocation()
     {
         $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');
 
@@ -66,19 +83,39 @@ class LokasiController extends Controller
             }
                         
         }    
-        $data['lokasi'] = $location;
-        return view('lokasi.index_lokasi', $data);
+
+        return $location;
     }
 
-    public function tambahLokasi()
+    public static function getAllLocationMappedId() 
     {
-        return view('lokasi.tambah_lokasi');
-    }
+        $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');
 
-    public function contohJsonLokasi()
-    {
-        $json_coordinate_example = file_get_contents(\public_path('json_coordinate_example.json'));
-        echo $json_coordinate_example;
+        $geojson = \json_decode($geoJsonRaw, true);
+    
+        $location = [];
+        foreach($geojson as $json) {
+            $feature = [];
+
+            if($json["sub_district"] === 'TABIR SELATAN') {                
+            
+                $feature = [                    
+                    "id" => $json["id"],
+                    "Provinsi" => $json["province"],
+                    "Kabupaten" => $json["district"],
+                    "Kecamatan" => $json["sub_district"], 
+                    "Desa" => $json["village"],                    
+                    "coordinates" => []                    
+                ];
+
+                $feature["coordinates"] = [$json["border"]];
+
+                $location[$json["id"]] = $feature;
+            }
+                        
+        }    
+
+        return $location;
     }
 
 

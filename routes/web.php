@@ -30,6 +30,10 @@ Route::get('/lokasi', [App\Http\Controllers\Admin\LokasiController::class, 'inde
 Route::get('/lokasi/tambah', [App\Http\Controllers\Admin\LokasiController::class, 'tambahLokasi']);
 Route::get('/lokasi/coordinateLocationExamplate', [App\Http\Controllers\Admin\LokasiController::class, 'contohJsonLokasi'])->name('coordinateExample');
 
+Route::get('/pasien', [App\Http\Controllers\Admin\PasienController::class, 'index']);
+Route::get('/pasien/tambah', [App\Http\Controllers\Admin\PasienController::class, 'tambahPasien']);
+Route::post('/pasien/save', [App\Http\Controllers\Admin\PasienController::class, 'savePasien'])->name('savePasien');
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

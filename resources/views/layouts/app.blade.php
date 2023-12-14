@@ -13,10 +13,15 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
-    <link href="{{ asset('css/bootstrap5/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap5/css/bootstrap.min.css') }}" rel="stylesheet">    
 
     <!-- Scripts -->
     
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
+    <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+
     <script src="{{ mix('/js/app.js') }}"></script>
 </head>
 <body>
@@ -52,12 +57,11 @@
                                 </li>
                             @endif
                         @else
-                            <li class="nav-item dropdown">
-                                <!-- <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a> -->
-                                <a class="nav-link" href="#">Lokasi</a>
+                            <li class="nav-item dropdown">                                
+                                <a class="nav-link" href="{{ url('/lokasi') }}">Lokasi</a>
                             </li>
                             <li class="nav-item dropdown">                                
-                                <a class="nav-link" href="#">Pasien</a>
+                                <a class="nav-link" href="{{ url('/pasien') }}">Pasien</a>
                             </li>
                             <li class="nav-item dropdown">                                
                                 <a class="nav-link" href="#">Laporan</a>
@@ -89,5 +93,7 @@
             @yield('content')
         </main>
     </div>
+
+    @yield('script')
 </body>
 </html>

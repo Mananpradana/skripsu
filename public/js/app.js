@@ -5223,7 +5223,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     onEachFeatureFunction: function onEachFeatureFunction() {
       return function (feature, layer) {
-        layer.bindTooltip("<div>Provinsi:" + feature.properties.Provinsi + "</div>" + "<div>Kecamatan: " + feature.properties.Kecamatan + "</div>" + "<div>Kelurahan: " + feature.properties.Kelurahan + "</div>" + "<div>Desa: " + feature.properties.Desa + "</div>", {
+        layer.bindTooltip("<div>ID:" + feature.properties.id + "</div>" + "<div>Provinsi:" + feature.properties.Provinsi + "</div>" + "<div>Kabupaten: " + feature.properties.Kabupaten + "</div>" + "<div>Kecamatan: " + feature.properties.Kecamatan + "</div>" + "<div>Desa: " + feature.properties.Desa + "</div>", {
           permanent: false,
           sticky: true
         });
