@@ -1,19 +1,36 @@
 <template>
+    
+    <div class="col-12">
+        <l-map style="height: 100vh" :zoom="zoom" :center="center">
 
-    <l-map style="height: 600px" :zoom="zoom" :center="center">
-        <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-        <l-marker :lat-lng="markerLatLng"></l-marker>
-        <l-geo-json :geojson="geojson" :options="options"></l-geo-json>
-    </l-map>
+            <l-control class="example-custom-control p-2">                
+                <div class="col-12">
+                    <div class="mb-3 mt-1">
+                        <h6> Filter Bulan :</h6>
+                        <VueDatePicker v-model="date" type="month" placeholder="Pilih Bulan" format="MM-YYYY" format-header="MM-YYYY" />                                                            
+                        <button class="btn btn-primary mt-1 float-end" @click="filterMonth"> Filter </button>
+                    </div>                                        
+                </div>
+                
+            </l-control>
+
+            <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+            <l-marker :lat-lng="markerLatLng"></l-marker>
+            <l-geo-json :geojson="geojson" :options="options"></l-geo-json>
+            
+        </l-map>
+    </div>
 </template>
 
 <script>
-import { LMap, LTileLayer, LMarker, LGeoJson } from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker, LGeoJson, LControl } from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { VueDatePicker } from '@mathieustan/vue-datepicker';
+import '@mathieustan/vue-datepicker/dist/vue-datepicker.min.css';
 
 export default {    
     components:{        
-        LMap, LTileLayer, LMarker, LGeoJson
+        LMap, LTileLayer, LMarker, LGeoJson, LControl, VueDatePicker
     }, 
     data() {
         return {
@@ -23,7 +40,8 @@ export default {
             zoom: 12,
             center: [-1.9608189, 102.4151335 ],
             markerLatLng: [-1.9608189, 102.4151335 ], 
-            geojson: null
+            geojson: null, 
+            date: null
         }
     }, 
     computed: {
@@ -39,17 +57,44 @@ export default {
                 "<div>Provinsi:" + feature.properties.Provinsi + "</div>" +
                 "<div>Kabupaten: " +feature.properties.Kabupaten +"</div>" +
                 "<div>Kecamatan: " +feature.properties.Kecamatan +"</div>" +
-                "<div>Desa: " +feature.properties.Desa +"</div>",
+                "<div>Desa: " +feature.properties.Desa +"</div>" +
+                "<div>Jumlah Pasien: " +feature.properties.Pasien +"</div>",
                 { permanent: false, sticky: true }
                 );
             };
-        }
-    },
+        },        
+    },    
     async created () {
         const response = await fetch('/getMainMap');
         this.geojson = await response.json();
+    },
+    methods: {
+        filterMonth() {
+            var url = '/getMainMap';
+
+            if(this.date !== null){ 
+                url = url+'?date='+this.date;
+                parent = this
+                axios.get(url)
+                .then(function(response){
+                    parent.geojson = response.data
+                })
+                .catch(error => console.log(error))
+            }
+        }
     }
 }
 
 </script>
+
+
+<style>
+.example-custom-control {
+  background: #fff;
+  padding: 0 0.5em;
+  border: 1px solid #aaa;
+  border-radius: 0.1em;
+}
+
+</style>
 

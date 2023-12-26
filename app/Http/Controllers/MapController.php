@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pasien;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MapController extends Controller
 {
-    public function getGeoJson()
+    public function getGeoJson(Request $request)
     {
-        $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');
+        $yearMonth = $request->date ?? null;        
+        $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');                
 
-        $geojson = \json_decode($geoJsonRaw, true);
-        // dump('data total (' . count($geojson) . ')');
+        $geojson = \json_decode($geoJsonRaw, true);        
 
         $featureCollection = [
             "type" => "FeatureCollection",
@@ -21,8 +23,14 @@ class MapController extends Controller
             $feature = [];
 
             if($json["sub_district"] === 'TABIR SELATAN') {
-                // dump($json);
-            
+                
+                if($yearMonth !== null) {
+                    $month = last(explode('-', $yearMonth));
+                    $jumlahPasien = Pasien::where('lokasi_desa', $json['id'])->whereMonth('tanggal_ditambahkan', $month)->count();
+                } else {
+                    $jumlahPasien = Pasien::where('lokasi_desa', $json['id'])->count();
+                }
+                
                 $feature = [
                     "type" => "Feature", 
                     "properties" => [
@@ -30,7 +38,8 @@ class MapController extends Controller
                         "Provinsi" => $json["province"],
                         "Kabupaten" => $json["district"],
                         "Kecamatan" => $json["sub_district"], 
-                        "Desa" => $json["village"]
+                        "Desa" => $json["village"], 
+                        "Pasien" => strval($jumlahPasien)
                     ],
                     "geometry" => [
                         "type" => "Polygon", 

@@ -14,7 +14,7 @@
                         
                         <div class="col-12 position-relative" style="min-height: 40px;">
                             <a class="btn btn-danger float-end" href="{{ url('/pasien/tambah') }}">
-                                Tambah Lokasi
+                                + Tambah Pasien
                             </a>                            
                         </div>
 
