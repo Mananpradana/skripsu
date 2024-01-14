@@ -1,7 +1,7 @@
 <template>
     
     <div class="col-12">
-        <l-map style="height: 100vh" :zoom="zoom" :center="center">
+        <l-map style="height: calc(100vh - 50px);" :zoom="zoom" :center="center">
 
             <l-control class="example-custom-control p-2">                
                 <div class="col-12">
@@ -16,7 +16,7 @@
 
             <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
             <l-marker :lat-lng="markerLatLng"></l-marker>
-            <l-geo-json :geojson="geojson" :options="options"></l-geo-json>
+            <l-geo-json :geojson="geojson" :options="options" :options-style="layerStyle"></l-geo-json>
             
         </l-map>
     </div>
@@ -62,7 +62,18 @@ export default {
                 { permanent: false, sticky: true }
                 );
             };
-        },        
+        },     
+        layerStyle() {            
+            return (feature) => {
+                return {
+                    weight: 2,
+                    color: "#ECEFF1",
+                    opacity: 1,
+                    fillColor: this.setLayerFillColor(parseInt(feature.properties.Pasien)),
+                    fillOpacity: 0.5
+                };
+            };
+        }       
     },    
     async created () {
         const response = await fetch('/getMainMap');
@@ -81,6 +92,11 @@ export default {
                 })
                 .catch(error => console.log(error))
             }
+        }, 
+        setLayerFillColor(d) {
+            return d > 30  ? '#a83232' : // merah
+                d > 15   ? '#f59631' :  // oren
+                '#32a852'    // hijau
         }
     }
 }

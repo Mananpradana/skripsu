@@ -26,6 +26,9 @@
 <body>
 
     <main id="app" style="margin: 0px; width: 100%;">
+        <nav class="navbar navbar-dark bg-primary d-flex justify-content-center">
+            <h3>Peta Pemetaan Penyakit Diabetes Militus</h3>
+        </nav>
             <app></app>
     </main>
 

@@ -11,7 +11,8 @@ class MapController extends Controller
     public function getGeoJson(Request $request)
     {
         $yearMonth = $request->date ?? null;        
-        $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');                
+        $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');  
+        $color = ['#32a852', '#a83232']; // hijau, merah, biru
 
         $geojson = \json_decode($geoJsonRaw, true);        
 
