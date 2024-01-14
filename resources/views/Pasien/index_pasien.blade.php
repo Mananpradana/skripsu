@@ -28,6 +28,7 @@
                                     <th scope="col">Umur</th>
                                     <th scope="col">Lokasi Desa</th>
                                     <th scope="col">Bulan Tahun</th>
+                                    <th scope="col">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -39,6 +40,11 @@
                                             <td>{{ $l['umur'] }}</td>
                                             <td>{{ $lokasi[$l['lokasi_desa']]['Desa'] }}</td>
                                             <td>{{ \Carbon\Carbon::parse($l['tanggal_ditambahkan'])->format('M Y') }}</td>
+                                            <td>                                                
+                                                <a href="{{ url('/pasien/edit').'/'.$l['id'] }}" class="btn btn-primary btn-sm p-1" style="margin: 2px;">Edit</button>
+                                                
+                                                <a href="{{ url('/pasien/delete').'/'.$l['id'] }}" class="btn btn-danger btn-sm p-1" style="margin: 2px;">Hapus</button>
+                                            </td>
                                         </tr>    
                                     @endforeach
                                 </tbody>

@@ -67,4 +67,39 @@ class PasienController extends Controller
 
         return redirect('pasien');
     }
+
+    function deletePasien(string $idPasien)
+    {
+        
+        $pasien = Pasien::find($idPasien);
+        $pasien->delete();
+
+        return redirect('pasien');
+    }
+
+    function editPasien(string $idPasien) 
+    {
+        $pasien = Pasien::find($idPasien);
+
+        $location = LokasiController::getAllLocation();
+        $data['lokasi'] = $location;
+        $data['pasien'] = $pasien;
+        return view('pasien.edit_pasien', $data);
+    }
+
+    function updatePasien(Request $request, string $idPasien) 
+    {
+        $pasienRequest = $request->all();
+
+        $pasien = Pasien::find($idPasien);
+        $pasien->nama = $pasienRequest['name'];
+        $pasien->jenis_kelamin = $pasienRequest['jenis_kelamin'];
+        $pasien->umur = (int) $pasienRequest['umur'];
+        $pasien->lokasi_desa = $pasienRequest['lokasi_desa'];
+        $pasien->tanggal_ditambahkan = Carbon::parse($pasienRequest['tanggal'])->toDateTimeString();
+
+        $pasien->save();
+
+        return redirect('pasien');
+    }
 }

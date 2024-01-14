@@ -33,6 +33,9 @@ Route::get('/lokasi/coordinateLocationExamplate', [App\Http\Controllers\Admin\Lo
 Route::get('/pasien', [App\Http\Controllers\Admin\PasienController::class, 'index']);
 Route::get('/pasien/tambah', [App\Http\Controllers\Admin\PasienController::class, 'tambahPasien']);
 Route::post('/pasien/save', [App\Http\Controllers\Admin\PasienController::class, 'savePasien'])->name('savePasien');
+Route::get('/pasien/delete/{idPasien}', [App\Http\Controllers\Admin\PasienController::class, 'deletePasien']);
+Route::get('/pasien/edit/{idPasien}', [App\Http\Controllers\Admin\PasienController::class, 'editPasien']);
+Route::get('/pasien/update', [App\Http\Controllers\Admin\PasienController::class, 'updatePasien'])->name('updatePasien');
 
 Auth::routes();
 
