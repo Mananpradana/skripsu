@@ -66,16 +66,7 @@ class PasienController extends Controller
         $pasien->save();
 
         return redirect('pasien');
-    }
-
-    function deletePasien(string $idPasien)
-    {
-        
-        $pasien = Pasien::find($idPasien);
-        $pasien->delete();
-
-        return redirect('pasien');
-    }
+    }    
 
     function editPasien(string $idPasien) 
     {

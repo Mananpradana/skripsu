@@ -41,9 +41,7 @@
                                             <td>{{ $lokasi[$l['lokasi_desa']]['Desa'] }}</td>
                                             <td>{{ \Carbon\Carbon::parse($l['tanggal_ditambahkan'])->format('M Y') }}</td>
                                             <td>                                                
-                                                <a href="{{ url('/pasien/edit').'/'.$l['id'] }}" class="btn btn-primary btn-sm p-1" style="margin: 2px;">Edit</button>
-                                                
-                                                <a href="{{ url('/pasien/delete').'/'.$l['id'] }}" class="btn btn-danger btn-sm p-1" style="margin: 2px;">Hapus</button>
+                                                <a href="{{ url('/pasien/edit').'/'.$l['id'] }}" class="btn btn-primary btn-sm p-1" style="margin: 2px;">Edit</button>                                                                                            
                                             </td>
                                         </tr>    
                                     @endforeach

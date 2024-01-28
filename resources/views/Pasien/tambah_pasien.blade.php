@@ -17,14 +17,14 @@
                                 @csrf
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Nama</label>
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Name">                                    
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" required>                                    
                                 </div>
                                 <div class="mb-3">
                                     <label class="col-sm-2 col-form-label">Jenis Kelamin</label>      
                                     <div class="col-sm-10">                              
-                                        <input type="checkbox" name="jenis_kelamin" class="form-check-input" id="gender-pria" value="Pria">
+                                        <input type="radio" name="jenis_kelamin" class="form-check-input" id="gender-pria" value="Pria" required>
                                         <label class="form-check-label" for="gender-pria">Pria</label>
-                                        <input type="checkbox" name="jenis_kelamin" class="form-check-input" id="gender-wanita" value="Wanita">
+                                        <input type="radio" name="jenis_kelamin" class="form-check-input" id="gender-wanita" value="Wanita">
                                         <label class="form-check-label" for="gender-wanita">Wanita</label>
                                     </div>
                                 </div>
@@ -35,7 +35,7 @@
                                 <div class="mb-3">
                                     <label for="lokasi_desa" class="form-label">Lokasi Desa</label>
                                     <select name="lokasi_desa" id="lokasi_desa" class="form-select" aria-label="Default select example" required>
-                                        <option>Pilih Lokasi Desa</option>
+                                        <option value="">Pilih Lokasi Desa</option>
                                         @foreach($lokasi as $l)                                        
                                             <option value="{{ $l['id']  }}">{{ $l['Desa'] }}</option>
                                         @endforeach

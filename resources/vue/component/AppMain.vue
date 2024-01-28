@@ -1,21 +1,76 @@
 <template>
     
     <div class="col-12">
-        <l-map style="height: calc(100vh - 50px);" :zoom="zoom" :center="center">
+        <l-map ref="skripsuMap" style="height: calc(70vh - 50px); min-height: 550px" :zoom="zoom" :center="center">
 
             <l-control class="example-custom-control p-2">                
                 <div class="col-12">
                     <div class="mb-3 mt-1">
-                        <h6> Filter Bulan :</h6>
-                        <VueDatePicker v-model="date" type="month" placeholder="Pilih Bulan" format="MM-YYYY" format-header="MM-YYYY" />                                                            
+                        <div class="col-12">
+                            <h6> Filter Periode :</h6>
+                            <VueDatePicker v-model="date" type="month" placeholder="Pilih Bulan" format="MM-YYYY" format-header="MM-YYYY" />
+                        </div>
+                        <div class="col-12 my-1">
+                            <h6> Filter Dominan</h6>  
+                                <div class="d-flex flex-row my-1">
+                                    <input class="form-check-input" type="checkbox" id="filterDominanParah" >
+                                    <label class="form-check-label" for="filterDominanParah" style="margin-left: 10px; width:50px; background: #a83232; opacity: 0.5; " >
+                                            &nbsp;
+                                    </label>
+                                </div>                       
+                                <div class="d-flex flex-row my-1">
+                                    <input class="form-check-input" type="checkbox" id="filterDominanSedang" >
+                                    <label class="form-check-label" for="filterDominanSedang" style="margin-left: 10px; width:50px; background: #f59631; opacity: 0.5; " >
+                                            &nbsp;
+                                    </label>
+                                </div>                       
+                                <div class="d-flex flex-row my-1">
+                                    <input class="form-check-input" type="checkbox" id="filterDominanAman" >
+                                    <label class="form-check-label" for="filterDominanAman" style="margin-left: 10px; width:50px; background: #32a852; opacity: 0.5; " >
+                                            &nbsp;
+                                    </label>
+                                </div>                          
+                                
+                        </div>
                         <button class="btn btn-primary mt-1 float-end" @click="filterMonth"> Filter </button>
                     </div>                                        
                 </div>
                 
             </l-control>
 
+            <l-control class="example-custom-control p-2" position="bottomright">
+                <div class="col-12" style="width: 100px">
+                    <div class="mb-3 mt-1">
+                        <div class="row">
+                            <div class="col-6 pe-0">
+                                > 30
+                            </div>
+                            <div class="col-6 ps-0">
+                                <div style="width: 100%; height: 20px; background: #a83232; opacity: 0.5; "></div>
+                            </div>                                
+                        </div>
+                        <div class="row">
+                            <div class="col-6 pe-0">
+                                16 - 30
+                            </div>
+                            <div class="col-6 ps-0">
+                                <div style="width: 100%; height: 20px; background: #f59631; opacity: 0.5; "></div>
+                            </div>                                
+                        </div>
+                        <div class="row">
+                            <div class="col-6 pe-0">
+                                0 - 15
+                            </div>
+                            <div class="col-6 ps-0">
+                                <div style="width: 100%; height: 20px; background: #32a852; opacity: 0.5; "></div>
+                            </div>                                
+                        </div>                        
+                    </div>     
+                </div>
+            </l-control>
+
             <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-            <l-marker :lat-lng="markerLatLng"></l-marker>
+            <!-- <l-marker :lat-lng="markerLatLng"></l-marker> -->
             <l-geo-json :geojson="geojson" :options="options" :options-style="layerStyle"></l-geo-json>
             
         </l-map>
@@ -41,17 +96,22 @@ export default {
             center: [-1.9608189, 102.4151335 ],
             markerLatLng: [-1.9608189, 102.4151335 ], 
             geojson: null, 
-            date: null
+            date: null, 
+            map: this
         }
     }, 
     computed: {
         options() {
             return {
-                onEachFeature: this.onEachFeatureFunction
+                onEachFeature: this.onEachFeatureFunction, 
+
             };
         },
-        onEachFeatureFunction() {           
+        onEachFeatureFunction() {
             return (feature, layer) => {
+
+                parent = this
+
                 layer.bindTooltip(
                 "<div>ID:" + feature.properties.id + "</div>" +
                 "<div>Provinsi:" + feature.properties.Provinsi + "</div>" +
@@ -59,14 +119,19 @@ export default {
                 "<div>Kecamatan: " +feature.properties.Kecamatan +"</div>" +
                 "<div>Desa: " +feature.properties.Desa +"</div>" +
                 "<div>Jumlah Pasien: " +feature.properties.Pasien +"</div>",
-                { permanent: false, sticky: true }
-                );
+                { permanent: false, sticky: false }
+                );        
+
+                layer.on('click', function(e) {                    
+                    parent.$refs.skripsuMap.mapObject.fitBounds(layer.getBounds())
+                })
+                
             };
-        },     
+        },
         layerStyle() {            
             return (feature) => {
                 return {
-                    weight: 2,
+                    weight: 2,                    
                     color: "#ECEFF1",
                     opacity: 1,
                     fillColor: this.setLayerFillColor(parseInt(feature.properties.Pasien)),
@@ -74,7 +139,7 @@ export default {
                 };
             };
         }       
-    },    
+    },        
     async created () {
         const response = await fetch('/getMainMap');
         this.geojson = await response.json();
@@ -97,7 +162,7 @@ export default {
             return d > 30  ? '#a83232' : // merah
                 d > 15   ? '#f59631' :  // oren
                 '#32a852'    // hijau
-        }
+        }        
     }
 }
 
@@ -110,6 +175,10 @@ export default {
   padding: 0 0.5em;
   border: 1px solid #aaa;
   border-radius: 0.1em;
+}
+
+path.leaflet-interactive:focus {
+    outline: none;
 }
 
 </style>
