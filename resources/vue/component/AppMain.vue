@@ -13,19 +13,19 @@
                         <div class="col-12 my-1">
                             <h6> Filter Dominan</h6>  
                                 <div class="d-flex flex-row my-1">
-                                    <input class="form-check-input" type="checkbox" id="filterDominanParah" >
+                                    <input class="form-check-input" type="checkbox" id="filterDominanParah" v-model="dominan" value="parah" checked >
                                     <label class="form-check-label" for="filterDominanParah" style="margin-left: 10px; width:50px; background: #a83232; opacity: 0.5; " >
                                             &nbsp;
                                     </label>
                                 </div>                       
                                 <div class="d-flex flex-row my-1">
-                                    <input class="form-check-input" type="checkbox" id="filterDominanSedang" >
+                                    <input class="form-check-input" type="checkbox" id="filterDominanSedang" v-model="dominan" value="sedang" checked >
                                     <label class="form-check-label" for="filterDominanSedang" style="margin-left: 10px; width:50px; background: #f59631; opacity: 0.5; " >
                                             &nbsp;
                                     </label>
                                 </div>                       
                                 <div class="d-flex flex-row my-1">
-                                    <input class="form-check-input" type="checkbox" id="filterDominanAman" >
+                                    <input class="form-check-input" type="checkbox" id="filterDominanAman" v-model="dominan" value="aman" checked>
                                     <label class="form-check-label" for="filterDominanAman" style="margin-left: 10px; width:50px; background: #32a852; opacity: 0.5; " >
                                             &nbsp;
                                     </label>
@@ -97,6 +97,7 @@ export default {
             markerLatLng: [-1.9608189, 102.4151335 ], 
             geojson: null, 
             date: null, 
+            dominan: [],
             map: this
         }
     }, 
@@ -147,16 +148,22 @@ export default {
     methods: {
         filterMonth() {
             var url = '/getMainMap';
+            parent = this
 
             if(this.date !== null){ 
-                url = url+'?date='+this.date;
-                parent = this
-                axios.get(url)
-                .then(function(response){
-                    parent.geojson = response.data
-                })
-                .catch(error => console.log(error))
+                url = url+'?date='+this.date;                                
             }
+
+            if(this.dominan !== null){ 
+                url = url+'?dominan='+this.dominan;                                
+            }
+
+            axios.get(url)
+            .then(function(response){
+                parent.geojson = response.data
+            })
+            //.catch(error => console.log(error))
+
         }, 
         setLayerFillColor(d) {
             return d > 30  ? '#a83232' : // merah
