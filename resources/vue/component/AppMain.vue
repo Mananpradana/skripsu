@@ -74,18 +74,28 @@
             <l-geo-json :geojson="geojson" :options="options" :options-style="layerStyle"></l-geo-json>
             
         </l-map>
+
+        <div class="d-flex justify-content-center py-3" style="height: 500px"> 
+            <div class="col-6">
+                <highcharts class="hc" :options="chartOptions" ref="chart"></highcharts>
+            </div>            
+        </div>
+
     </div>
 </template>
 
 <script>
+import { Chart } from 'highcharts-vue';
+
 import { LMap, LTileLayer, LMarker, LGeoJson, LControl } from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { VueDatePicker } from '@mathieustan/vue-datepicker';
 import '@mathieustan/vue-datepicker/dist/vue-datepicker.min.css';
 
+
 export default {    
     components:{        
-        LMap, LTileLayer, LMarker, LGeoJson, LControl, VueDatePicker
+        LMap, LTileLayer, LMarker, LGeoJson, LControl, VueDatePicker, highcharts: Chart, 
     }, 
     data() {
         return {
@@ -93,12 +103,57 @@ export default {
             attribution:
                 '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             zoom: 12,
-            center: [-1.9608189, 102.4151335 ],
-            markerLatLng: [-1.9608189, 102.4151335 ], 
+            center: [-1.9608189, 102.4151335],
+            markerLatLng: [-1.9608189, 102.4151335], 
             geojson: null, 
             date: null, 
             dominan: [],
-            map: this
+            map: this, 
+            chartOptions: {                
+                title: {
+                        text: "Chart",
+                },
+                chart: {
+                    type: "column",
+                },
+                plotOptions: {
+                    column: {
+                        dataLabels: {
+                            enabled: true
+                        }                        
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Jumlah Pasien'
+                    }
+                },
+                xAxis: {
+                    title: {
+                        text: 'Desa'
+                    }
+                },
+                series: {
+                    name: "Jumlah Pasien",
+                    data: [],
+                    zones: [
+                            {
+                                value: 15, 
+                                color: '#32a852' // hijau
+                            },
+                            {
+                                value: 30, 
+                                color: '#f59631' // oren
+                            },
+                            {            
+                                               
+                                color: '#a83232'  //merah
+                            }
+                            
+                            
+                    ]
+                }
+            }
         }
     }, 
     computed: {
@@ -144,6 +199,13 @@ export default {
     async created () {
         const response = await fetch('/getMainMap');
         this.geojson = await response.json();
+        this.chartOptions.title.text = this.geojson.chartTitle
+        this.chartOptions.xAxis = {
+            crosshair: true,
+            categories: this.geojson.chartXSeries
+        }
+        // this.chartOptions.series.name = "Pasien"
+        this.chartOptions.series.data = this.geojson.chartSeries     
     },
     methods: {
         filterMonth() {
@@ -161,6 +223,13 @@ export default {
             axios.get(url)
             .then(function(response){
                 parent.geojson = response.data
+                parent.chartOptions.title.text = parent.geojson.chartTitle
+                parent.chartOptions.xAxis = {
+                    crosshair: true,                   
+                    categories: parent.geojson.chartXSeries
+                }
+                // parent.chartOptions.series.name = "Pasien"
+                parent.chartOptions.series.data = parent.geojson.chartSeries    
             })
             //.catch(error => console.log(error))
 

@@ -21,13 +21,20 @@ class MapController extends Controller
 
         $geojson = \json_decode($geoJsonRaw, true);        
 
+        $chartTitle = "Grafik Penyakit Diabetes Militus";
+        
         $featureCollection = [
             "type" => "FeatureCollection",
-            "features" => []
+            "features" => [], 
+            "chartSeries" => [],
+            "chartXSeries" => [],
+            "chartTitle" => $chartTitle
         ];        
+        
+        $series = [];
+        $xSeries = [];
         foreach($geojson as $json) {
-            $feature = [];
-
+            $feature = [];            
             if($json["sub_district"] === 'TABIR SELATAN') {
                 
                 if($yearMonth !== null) {
@@ -66,14 +73,17 @@ class MapController extends Controller
                         "coordinates" => []
                     ]
                 ];
+                $series[] = $jumlahPasien;
+                $xSeries[] = $json["village"];
 
                 $feature["geometry"]["coordinates"] = [$json["border"]];
 
                 $featureCollection["features"][] = $feature;            
-            }
-            
-            
+            }                        
         }    
+        
+        $featureCollection['chartSeries'] = $series;
+        $featureCollection['chartXSeries'] = $xSeries;            
         
         return response()->json($featureCollection, 200);
     }

@@ -26,6 +26,7 @@
     },
     "dependencies": {
         "@mathieustan/vue-datepicker": "^0.2.11",
+        "highcharts-vue": "^1.4.3",
         "leaflet": "^1.9.4",
         "vue": "^2.7.14",
         "vue2-leaflet": "^2.7.1"
