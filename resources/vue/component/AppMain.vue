@@ -1,5 +1,4 @@
-<template>
-    
+<template>    
     <div class="col-12">
         <l-map ref="skripsuMap" style="height: calc(70vh - 50px); min-height: 550px" :zoom="zoom" :center="center">
 
@@ -31,8 +30,9 @@
                                     </label>
                                 </div>                          
                                 
-                        </div>
-                        <button class="btn btn-primary mt-1 float-end" @click="filterMonth"> Filter </button>
+                        </div>                        
+                        <button class="btn btn-primary btn-sm mt-1 mx-1 float-end" @click="filterMonth"> Filter </button>
+                        <button class="btn btn-secondary btn-sm mt-1 mx-1 float-end " @click="resetFilter"> Reset </button>
                     </div>                                        
                 </div>
                 
@@ -77,8 +77,68 @@
 
         <div class="d-flex justify-content-center py-3" style="height: 500px"> 
             <div class="col-6">
+                <div class="row">
+                    <div class="col-6"> 
+                        <select class="form-select" aria-label="Default select example" v-model="chartFilterTahun" >
+                            <option >- Pilih Tahun -</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>                            
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <select class="form-select" aria-label="Default select example" v-model="chartFilterDesa">
+                            <option >- Pilih Desa -</option>
+                            <option v-for="option in lokasi_desa" v-bind:value="option.id">
+                                {{ option.Desa }}
+                            </option>
+                            
+                        </select>
+                        <button class="btn btn-primary btn-sm mt-1 mx-1 float-end" style="max-width: 100px;" @click="filterChart" > Filter Grafik </button>
+                    </div>
+                    
+                </div>
+                
                 <highcharts class="hc" :options="chartOptions" ref="chart"></highcharts>
             </div>            
+        </div>        
+
+        <div class="modal fade" id="exampleModal" ref="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="max-width: 1000px">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Pesien</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nama Pasien</th>                                    
+                                    <th scope="col">Jenis Kelamin</th>
+                                    <th scope="col">Umur</th>
+                                    <th scope="col">Tanggal Periksa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(value, key) in detailPasien" >
+                                    <th scope="row">{{ key+1 }}</th>
+                                    <td>{{ value.nama_pasien }}</td>
+                                    <td>{{ value.jenis_kelamin }}</td>
+                                    <td>{{ value.umur }}</td>
+                                    <td>{{ value.tanggal_periksa }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -92,10 +152,9 @@ import 'leaflet/dist/leaflet.css';
 import { VueDatePicker } from '@mathieustan/vue-datepicker';
 import '@mathieustan/vue-datepicker/dist/vue-datepicker.min.css';
 
-
 export default {    
     components:{        
-        LMap, LTileLayer, LMarker, LGeoJson, LControl, VueDatePicker, highcharts: Chart, 
+        LMap, LTileLayer, LMarker, LGeoJson, LControl, VueDatePicker, highcharts: Chart
     }, 
     data() {
         return {
@@ -107,7 +166,18 @@ export default {
             markerLatLng: [-1.9608189, 102.4151335], 
             geojson: null, 
             date: null, 
+            lokasi_desa: [],
             dominan: [],
+            chartFilterTahun: null,
+            chartFilterDesa: null,
+            detailPasien: [
+                {
+                    nama_pesien: '',
+                    umur: '', 
+                    jenis_kelamin: '',
+                    tanggal_periksa: ''
+                }
+            ],
             map: this, 
             chartOptions: {                
                 title: {
@@ -180,6 +250,7 @@ export default {
 
                 layer.on('click', function(e) {                    
                     parent.$refs.skripsuMap.mapObject.fitBounds(layer.getBounds())
+                    parent.showModal(feature.properties.id)
                 })
                 
             };
@@ -199,6 +270,9 @@ export default {
     async created () {
         const response = await fetch('/getMainMap');
         this.geojson = await response.json();
+
+        this.lokasi_desa = this.getLocationFromFilterMonth(this.geojson.features)        
+
         this.chartOptions.title.text = this.geojson.chartTitle
         this.chartOptions.xAxis = {
             crosshair: true,
@@ -206,21 +280,26 @@ export default {
         }
         // this.chartOptions.series.name = "Pasien"
         this.chartOptions.series.data = this.geojson.chartSeries     
+        
     },
     methods: {
         filterMonth() {
             var url = '/getMainMap';
+            var param = {
+                date: null,
+                dominan: null
+            }
             parent = this
 
             if(this.date !== null){ 
-                url = url+'?date='+this.date;                                
+                param.date = this.date
             }
 
             if(this.dominan !== null){ 
-                url = url+'?dominan='+this.dominan;                                
+                param.dominan = this.dominan
             }
 
-            axios.get(url)
+            axios.get(url, {params: param})
             .then(function(response){
                 parent.geojson = response.data
                 parent.chartOptions.title.text = parent.geojson.chartTitle
@@ -228,17 +307,60 @@ export default {
                     crosshair: true,                   
                     categories: parent.geojson.chartXSeries
                 }
-                // parent.chartOptions.series.name = "Pasien"
-                parent.chartOptions.series.data = parent.geojson.chartSeries    
-            })
-            //.catch(error => console.log(error))
-
+                
+                parent.chartOptions.series.data = parent.geojson.chartSeries                    
+            })            
         }, 
+        getLocationFromFilterMonth(features) {
+            var location = [];
+
+            features.forEach((element) => location.push(element.properties) );            
+            return location;
+        },
         setLayerFillColor(d) {
             return d > 30  ? '#a83232' : // merah
                 d > 15   ? '#f59631' :  // oren
                 '#32a852'    // hijau
-        }        
+        }, 
+        resetFilter() {
+            this.dominan = null
+            this.date = null
+        },
+        showModal(idDesa) {
+            
+            var parent = this
+            var url = '/getDetailMap';
+            var param = {
+                idDesa : idDesa
+            }
+
+            axios.get(url, {params: param})
+            .then(function(response){
+                
+                parent.detailPasien = response.data
+            })
+
+            $('#exampleModal').modal('show')            
+        }, 
+        filterChart() {
+            var url = '/getChartSeries';
+            var parent = this
+            var param = {
+                tahun: this.chartFilterTahun, 
+                idDesa: this.chartFilterDesa
+            }
+
+            axios.get(url, {params: param})
+            .then(function(response){ 
+                // console.log(response);
+                parent.chartOptions.xAxis = {
+                    crosshair: true,                   
+                    categories: response.data.chartXSeries
+                }
+                parent.chartOptions.series.data = response.data.chartSeries                
+            })
+        }
+        
     }
 }
 

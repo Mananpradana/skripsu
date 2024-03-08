@@ -16,13 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/getMainMap', [MapController::class, 'getGeoJson']);
+Route::get('/getDetailMap', [MapController::class, 'getDetailMap']);
+Route::get('/getChartSeries', [MapController::class, 'getChartSeries']);
 
-Route::get('/main', function () {
+Route::get('/', function () {
     return view('main');
 });
 
