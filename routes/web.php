@@ -37,7 +37,7 @@ Route::get('/pasien/tambah', [App\Http\Controllers\Admin\PasienController::class
 Route::post('/pasien/save', [App\Http\Controllers\Admin\PasienController::class, 'savePasien'])->name('savePasien');
 Route::get('/pasien/delete/{idPasien}', [App\Http\Controllers\Admin\PasienController::class, 'deletePasien']);
 Route::get('/pasien/edit/{idPasien}', [App\Http\Controllers\Admin\PasienController::class, 'editPasien']);
-Route::get('/pasien/update', [App\Http\Controllers\Admin\PasienController::class, 'updatePasien'])->name('updatePasien');
+Route::post('/pasien/update', [App\Http\Controllers\Admin\PasienController::class, 'updatePasien'])->name('updatePasien');
 
 Auth::routes();
 

@@ -323,7 +323,7 @@ export default {
                 '#32a852'    // hijau
         }, 
         resetFilter() {
-            this.dominan = null
+            this.dominan = []
             this.date = null
         },
         showModal(idDesa) {
