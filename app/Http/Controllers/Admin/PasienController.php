@@ -78,11 +78,11 @@ class PasienController extends Controller
         return view('pasien.edit_pasien', $data);
     }
 
-    function updatePasien(Request $request, string $idPasien) 
+    function updatePasien(Request $request) 
     {
         $pasienRequest = $request->all();
 
-        $pasien = Pasien::find($idPasien);
+        $pasien = Pasien::find($pasienRequest['id']);
         $pasien->nama = $pasienRequest['name'];
         $pasien->jenis_kelamin = $pasienRequest['jenis_kelamin'];
         $pasien->umur = (int) $pasienRequest['umur'];
