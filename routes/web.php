@@ -39,6 +39,8 @@ Route::get('/pasien/delete/{idPasien}', [App\Http\Controllers\Admin\PasienContro
 Route::get('/pasien/edit/{idPasien}', [App\Http\Controllers\Admin\PasienController::class, 'editPasien']);
 Route::post('/pasien/update', [App\Http\Controllers\Admin\PasienController::class, 'updatePasien'])->name('updatePasien');
 
+Route::get('/laporan', [App\Http\Controllers\Admin\LaporanController::class, 'index']);
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -132,7 +132,7 @@ class MapController extends Controller
             
             $pasienSebulan[] =  Pasien::whereYear('tanggal_ditambahkan', $tahun)
                                 ->whereMonth('tanggal_ditambahkan', $a)
-                                ->where('lokasi_desa', $idDesa)                                
+                                ->where('lokasi_desa', $idDesa)
                                 ->count();
         }        
 

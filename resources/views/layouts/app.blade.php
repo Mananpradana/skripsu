@@ -22,6 +22,8 @@
     <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 
+    @yield('style')
+
     <script src="{{ mix('/js/app.js') }}"></script>
 </head>
 <body>
@@ -58,7 +60,7 @@
                                 <a class="nav-link" href="{{ url('/pasien') }}">Pasien</a>
                             </li>
                             <li class="nav-item dropdown">                                
-                                <a class="nav-link" href="#">Laporan</a>
+                                <a class="nav-link" href="{{ url('/laporan') }}">Laporan</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
