@@ -42,6 +42,9 @@ Route::post('/pasien/update', [App\Http\Controllers\Admin\PasienController::clas
 Route::get('/laporan', [App\Http\Controllers\Admin\LaporanController::class, 'index']);
 Route::get('/laporan/export', [App\Http\Controllers\Admin\LaporanController::class, 'exportPdf']);
 
+Route::get('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'index']);
+Route::post('/profile/change-password', [App\Http\Controllers\Admin\ProfileController::class, 'changePassword']);
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
