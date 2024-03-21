@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Pasien;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanController extends Controller
 {
@@ -32,6 +33,21 @@ class LaporanController extends Controller
 
     public function index()
     {
+        $data = $this->getDataLaporan();
+        return view('laporan.index_laporan', $data);
+    }
+
+    public function exportPdf()
+    {
+        $data = $this->getDataLaporan();
+        $view = view('laporan.laporan-pdf', $data);
+
+        $pdf = Pdf::loadHTML($view->render())->setPaper('A4','landscape');
+        return $pdf->stream();
+    }
+
+    private function getDataLaporan()
+    {
         $bulan = [
             '',
             'Januari',
@@ -47,8 +63,7 @@ class LaporanController extends Controller
             'November',
             'Desember'
         ];
-        $laporan = [];
-        $barisTotal = [];
+        $laporan = [];        
         $total = [];
         $location = $this->getAllLocationMappedId();                
         foreach($location as $lokasi) {
@@ -128,8 +143,10 @@ class LaporanController extends Controller
         
         $data['laporan'] = $laporan;
 
-        return view('laporan.index_laporan', $data);
+        return $data;
     }
+
+
 
 
     public static function getAllLocationMappedId() 

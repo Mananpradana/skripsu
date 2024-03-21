@@ -40,6 +40,7 @@ Route::get('/pasien/edit/{idPasien}', [App\Http\Controllers\Admin\PasienControll
 Route::post('/pasien/update', [App\Http\Controllers\Admin\PasienController::class, 'updatePasien'])->name('updatePasien');
 
 Route::get('/laporan', [App\Http\Controllers\Admin\LaporanController::class, 'index']);
+Route::get('/laporan/export', [App\Http\Controllers\Admin\LaporanController::class, 'exportPdf']);
 
 Auth::routes();
 

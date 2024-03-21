@@ -1,34 +1,65 @@
-@extends('layouts.app')
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@section('style')
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<style>
+    <title>{{ config('app.name', 'Laravel') }}</title>
 
-    th {
-        text-align: center;
-    }
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
-    td {
-        text-align: center;
-    }
+    <link href="{{ asset('css/bootstrap5/css/bootstrap.min.css') }}" rel="stylesheet">    
 
-    .colom-align-left {
-        text-align: left;
-    }
+    <!-- Scripts -->
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
-</style>
+    <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
+    <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 
-@endsection
+    <script src="{{ mix('/js/app.js') }}"></script>
 
-@section('content')
+    <style>
+
+        table{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: smaller;
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: center;
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+
+        td {
+            text-align: center;
+            min-width: 20px;
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+
+        .colom-align-left {
+            text-align: left;
+        }
+
+    </style>
+</head>
+<body>
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     Laporan
-                    
-                    <a class="btn btn-primary btn-sm float-end" href="{{ url('laporan/export') }}" target="_blank" >Export</a>
                 </div>
 
                 <div class="card-body p-1">
@@ -257,4 +288,6 @@
         </div>
     </div>
 </div>
-@endsection
+
+</body>
+</html>
