@@ -40,9 +40,10 @@ class LaporanController extends Controller
     public function exportPdf()
     {
         $data = $this->getDataLaporan();
+        // return view('laporan.laporan-pdf', $data);
         $view = view('laporan.laporan-pdf', $data);
 
-        $pdf = Pdf::loadHTML($view->render())->setPaper('A4','landscape');
+        $pdf = Pdf::loadHTML($view->render())->setPaper('A4', 'landscape');
         return $pdf->stream();
     }
 
