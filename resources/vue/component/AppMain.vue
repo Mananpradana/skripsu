@@ -168,7 +168,7 @@
               aria-label="Default select example"
               v-model="chartFilterTahun"
             >
-              <option disabled value="">- Pilih Tahun -</option>
+              <option value="">- Pilih Tahun -</option>
               <option value="2023">2023</option>
               <option value="2024">2024</option>
             </select>
@@ -179,7 +179,7 @@
               aria-label="Default select example"
               v-model="chartFilterDesa"
             >
-              <option disabled value="">- Pilih Desa -</option>
+              <option value="">- Pilih Desa -</option>
               <option v-for="option in lokasi_desa" v-bind:value="option.id">
                 {{ option.Desa }}
               </option>
@@ -283,8 +283,8 @@ export default {
       date: null,
       lokasi_desa: [],
       dominan: [],
-      chartFilterTahun: null,
-      chartFilterDesa: null,
+      chartFilterTahun: '',
+      chartFilterDesa: '',
       detailPasien: [
         {
           nama_pesien: "",

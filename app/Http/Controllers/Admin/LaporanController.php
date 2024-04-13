@@ -7,6 +7,7 @@ use App\Models\Pasien;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 
 class LaporanController extends Controller
 {
@@ -31,23 +32,29 @@ class LaporanController extends Controller
 
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $data = $this->getDataLaporan();
+        $formData = $request->all();
+        
+        $data = $this->getDataLaporan($formData['tahun'] ?? 'all', $formData['bulan'] ?? 'all');        
+        $data['option'] = ['tahun' => $formData['tahun'] ?? '', 'bulan' => $formData['bulan'] ?? '' ];
+        
         return view('laporan.index_laporan', $data);
+
+
     }
 
-    public function exportPdf()
+    public function exportPdf(Request $request)
     {
-        $data = $this->getDataLaporan();
-        // return view('laporan.laporan-pdf', $data);
+        $formData = $request->all();
+        $data = $this->getDataLaporan($formData['tahun'] ?? 'all', $formData['bulan'] ?? 'all');
         $view = view('laporan.laporan-pdf', $data);
 
         $pdf = Pdf::loadHTML($view->render())->setPaper('A4', 'landscape');
         return $pdf->stream();
     }
 
-    private function getDataLaporan()
+    private function getDataLaporan(string $tahunPilihan, string $bulanPilihan)
     {
         $bulan = [
             '',
@@ -64,86 +71,101 @@ class LaporanController extends Controller
             'November',
             'Desember'
         ];
-        $laporan = [];        
-        $total = [];
+               
+        
+
+        $getYears = Pasien::selectRaw("YEAR(tanggal_ditambahkan)")->distinct()->get()->toArray();
+        $years = [];
+        $aStart = 1;
+        $aMax = 12;
+
+        foreach($getYears as $indexYears =>$tahun) {
+            $years[] = array_values($tahun)[0];
+        }        
+        
+        if($tahunPilihan !== 'all') {
+            $years = [intVal($tahunPilihan)];
+            $aStart = 1;
+            $aMax = 12;
+        }
+        if($bulanPilihan !== 'all') {
+            $aStart = intVal($bulanPilihan);
+            $aMax = intVal($bulanPilihan);
+        }
+
         $location = $this->getAllLocationMappedId();                
-        foreach($location as $lokasi) {
-            
-            $tmpLokasi = [];            
+        
+        $tmpTahun = [];
+        foreach($years as $year) {            
+            $laporan = [];                    
+            $tmpTotal = [];
 
-            for($a=1; $a<=12; $a++) {
+            foreach($location as $indexLokasi=>$lokasi) {
                 
-                $priaPerBulanTahunIni = Pasien::where('lokasi_desa', $lokasi['id'])
-                                        ->whereMonth('tanggal_ditambahkan', $a)
-                                        ->whereYear('tanggal_ditambahkan', date('Y'))
-                                        ->where('jenis_kelamin', 'Pria')
-                                        ->count();
-                
-                $wanitaPerBulanTahunIni = Pasien::where('lokasi_desa', $lokasi['id'])
-                                            ->whereMonth('tanggal_ditambahkan', $a)
-                                            ->whereYear('tanggal_ditambahkan', date('Y'))
-                                            ->where('jenis_kelamin', 'Wanita')
-                                            ->count();
+                $tmpLokasi = [];                  
 
-                $priaPerBulanTahunLalu = Pasien::where('lokasi_desa', $lokasi['id'])
+                for($a=$aStart; $a<=$aMax; $a++) {
+                    
+                    $priaPerBulanTahunIni = Pasien::where('lokasi_desa', $lokasi['id'])
                                             ->whereMonth('tanggal_ditambahkan', $a)
-                                            ->whereYear('tanggal_ditambahkan', date('Y')-1)
+                                            ->whereYear('tanggal_ditambahkan', $year)
                                             ->where('jenis_kelamin', 'Pria')
                                             ->count();
                     
-                $wanitaPerBulanTahunLalu = Pasien::where('lokasi_desa', $lokasi['id'])
+                    $wanitaPerBulanTahunIni = Pasien::where('lokasi_desa', $lokasi['id'])
                                                 ->whereMonth('tanggal_ditambahkan', $a)
-                                                ->whereYear('tanggal_ditambahkan', date('Y')-1)
+                                                ->whereYear('tanggal_ditambahkan', $year)
                                                 ->where('jenis_kelamin', 'Wanita')
-                                                ->count();
+                                                ->count();                    
 
-                $jml_tahun_ini = $priaPerBulanTahunIni + $wanitaPerBulanTahunIni;
-                $jml_tahun_lalu = $priaPerBulanTahunLalu + $wanitaPerBulanTahunLalu;
-                $tempLaporan = [
-                    'bulan' => $bulan[$a],
-                    'pria_tahun_ini' => $priaPerBulanTahunIni,
-                    'wanita_tahun_ini' => $wanitaPerBulanTahunIni,
-                    'jml_tahun_ini' => $jml_tahun_ini,
-                    'pria_tahun_lalu' => $priaPerBulanTahunLalu,
-                    'wanita_tahun_lalu' => $wanitaPerBulanTahunLalu,
-                    'jml_tahun_lalu' => $jml_tahun_lalu
-                ];            
-                
-                if(isset($total[$a-1]) === true ) {
-                    $total[$a-1]['total_pria'] += $priaPerBulanTahunIni;
-                    $total[$a-1]['total_wanita'] += $wanitaPerBulanTahunIni;
-                    $total[$a-1]['total'] += $jml_tahun_ini;
-
-                    $total[$a-1]['total_pria_tahun_lalu'] += $priaPerBulanTahunLalu;
-                    $total[$a-1]['total_wanita_tahun_lalu'] += $wanitaPerBulanTahunLalu;
-                    $total[$a-1]['total_tahun_lalu'] += $jml_tahun_lalu;    
-                } else {
-                    $total[$a-1] = [
+                    $jml_tahun_ini = $priaPerBulanTahunIni + $wanitaPerBulanTahunIni;
+                    
+                    $tempLaporan = [
                         'bulan' => $bulan[$a],
-                        'total_pria' => $priaPerBulanTahunIni, 
-                        'total_wanita' => $wanitaPerBulanTahunIni, 
-                        'total' => $jml_tahun_ini,
-                        'total_pria_tahun_lalu' => $priaPerBulanTahunLalu,
-                        'total_wanita_tahun_lalu' => $wanitaPerBulanTahunLalu, 
-                        'total_tahun_lalu' => $jml_tahun_lalu
+                        'pria' => $priaPerBulanTahunIni,
+                        'wanita' => $wanitaPerBulanTahunIni,
+                        'jml' => $jml_tahun_ini,                        
+                    ];                                
+                    
+                    $tmpLokasi[] = $tempLaporan;      
+                    
+                    if(isset($tmpTotal[$bulan[$a]]) === true ) {
+                        
+                        $tmpTotal[$bulan[$a]] = [
+                            'pria' => $tmpTotal[$bulan[$a]]['pria'] + $priaPerBulanTahunIni, 
+                            'wanita' => $tmpTotal[$bulan[$a]]['wanita'] + $wanitaPerBulanTahunIni, 
+                            'jml' => $tmpTotal[$bulan[$a]]['jml'] + $jml_tahun_ini
+                        ];
+                    } else {
+                        
+                        $tmpTotal[$bulan[$a]] = [
+                            'pria' => $priaPerBulanTahunIni, 
+                            'wanita' => $wanitaPerBulanTahunIni, 
+                            'jml' => $jml_tahun_ini
+                        ];
+                    }
+                    
+                }                                                                                   
+                
+                $laporan[] = [                
+                    'data' => $tmpLokasi, 
+                    'desa' => $lokasi['Desa']
+                ];
+
+                if($indexLokasi === count($location)) {
+                    $laporan[] = [                
+                        'data' => $tmpTotal, 
+                        'desa' => 'TOTAL'
                     ];
                 }
                 
-                $tmpLokasi[] = $tempLaporan;                                  
-            }                   
+            }   
+                        
             
-            $laporan[] = [                
-                'data' => $tmpLokasi, 
-                'desa' => $lokasi['Desa']
-            ];
+            $tmpTahun[$year] = $laporan;
         }
         
-        $laporan[] = [
-            'data' => $total            
-        ];
-        
-        $data['laporan'] = $laporan;
-
+        $data['laporan'] = $tmpTahun;
         return $data;
     }
 

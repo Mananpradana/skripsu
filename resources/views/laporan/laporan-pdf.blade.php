@@ -50,8 +50,8 @@
             border-collapse: collapse;
         }
 
-        .colom-align-left {
-            text-align: left;
+        tbody tr td .colom-align-left {
+            text-align: left !important;
         }
 
         .font-smaller {
@@ -64,224 +64,61 @@
 
 <div class="py-4">    
     <div class="col-md-12">
-        
-        <div class="container">
-            
-            <div class="col position-relative">                                            
-                <h5 style="text-align:center">Laporan Pasien Tahun {{ date('Y') }}</h5>                     
-            </div>
-            <div class="col-12 position-relative" >
-                <table class="table table-responsive table-bordered table-sm">
-                    <thead>
-                        <tr class="align-middle">
-                            <th scope="col" rowspan="2">#No</th>                                    
-                            <th scope="col" rowspan="2">Nama Desa</th>
-                            <th scope="col" colspan="3">Januari</th>
-                            <th scope="col" colspan="3">Februai</th>
-                            <th scope="col" colspan="3">Maret</th>
-                            <th scope="col" colspan="3">April</th>
-                            <th scope="col" colspan="3">Mei</th>
-                            <th scope="col" colspan="3">Juni</th>
-                            <th scope="col" colspan="3">Juli</th>
-                            <th scope="col" colspan="3">Agustus</th>
-                            <th scope="col" colspan="3">September</th>
-                            <th scope="col" colspan="3">Oktober</th>
-                            <th scope="col" colspan="3">November</th>
-                            <th scope="col" colspan="3">Desember</th>
-                        </tr>
-                        <tr>
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-                        </tr>
-                    </thead>
-                    
-                    <tbody>
-                        @for($a = 0; $a < (count($laporan)-1); $a++)
-
-                            <tr>
-                                <th scope="row">{{ $a+1 }}</th>                                            
-                                <td class="colom-align-left font-smaller">{{ $laporan[$a]['desa'] }}</td>
-                                
-                                @foreach($laporan[$a]['data'] as $indexData => $data)
-                                    <td>{{ $data['pria_tahun_ini'] }}</td>
-                                    <td>{{ $data['wanita_tahun_ini'] }}</td>
-                                    <td>{{ $data['jml_tahun_ini'] }}</td>
-                                @endforeach                                            
-                            </tr>                                            
-
-                        @endfor                                        
-
-                            <tr>
-                                <th scope="row">{{ '#' }}</th>                                            
-                                <th class="colom-align-left">{{ 'TOTAL' }}</th>
-                                
-                                @foreach($laporan[count($laporan)-1]['data'] as $indexData => $data)
-                                    <td>{{ $data['total_pria'] }}</td>
-                                    <td>{{ $data['total_wanita'] }}</td>
-                                    <td>{{ $data['total'] }}</td>
-                                @endforeach                                            
-                            </tr>
-
-                    </tbody>
-                </table>
-            </div>
-            
-        </div>
-
-        <div class="container">
-            
-            <div class="col position-relative">                            
-                <h5 style="text-align:center">Laporan Pasien Tahun {{ date('Y')-1 }}</h5>                                     
-            </div>
-            <div class="col-12 position-relative" >
-                <table class="table table-responsive table-bordered table-sm">
-                    <thead>
-                        <tr class="align-middle">
-                            <th scope="col" rowspan="2">#No</th>                                    
-                            <th scope="col" rowspan="2">Nama Desa</th>
-                            <th scope="col" colspan="3">Januari</th>
-                            <th scope="col" colspan="3">Februai</th>
-                            <th scope="col" colspan="3">Maret</th>
-                            <th scope="col" colspan="3">April</th>
-                            <th scope="col" colspan="3">Mei</th>
-                            <th scope="col" colspan="3">Juni</th>
-                            <th scope="col" colspan="3">Juli</th>
-                            <th scope="col" colspan="3">Agustus</th>
-                            <th scope="col" colspan="3">September</th>
-                            <th scope="col" colspan="3">Oktober</th>
-                            <th scope="col" colspan="3">November</th>
-                            <th scope="col" colspan="3">Desember</th>
-                        </tr>
-                        <tr>
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-
-                            <th scope="col">L</th>
-                            <th scope="col">P</th>
-                            <th scope="col">Jml</th>
-                        </tr>
-                    </thead>
-                    
-                    <tbody>
-                        @for($a = 0; $a < (count($laporan)-1); $a++)
-
-                            <tr>
-                                <th scope="row">{{ $a+1 }}</th>                                            
-                                <td class="colom-align-left font-smaller">{{ $laporan[$a]['desa'] }}</td>
-                                
-                                @foreach($laporan[$a]['data'] as $indexData => $data)
-                                    <td>{{ $data['pria_tahun_lalu'] }}</td>
-                                    <td>{{ $data['wanita_tahun_lalu'] }}</td>
-                                    <td>{{ $data['jml_tahun_lalu'] }}</td>
-                                @endforeach                                            
-                            </tr>                                            
-
-                        @endfor
-
-                            <tr>
-                                <th scope="row">{{ '#' }}</th>                                            
-                                <th class="colom-align-left font-smaller">{{ 'TOTAL' }}</th>
-                                
-                                @foreach($laporan[count($laporan)-1]['data'] as $indexData => $data)
-                                    <td>{{ $data['total_pria_tahun_lalu'] }}</td>
-                                    <td>{{ $data['total_wanita_tahun_lalu'] }}</td>
-                                    <td>{{ $data['total_tahun_lalu'] }}</td>
-                                @endforeach                                            
-                            </tr>
+        @foreach($laporan as $year=>$dataYear)                    
+            <div class="container">
+                
+                <div class="col position-relative">                            
+                    <center>
+                        <h5>Laporan Pasien Tahun {{ $year }}</h5>
+                    </center>                            
+                </div>
+                <div class="col-12 position-relative" >
+                    <table class="table table-responsive table-bordered table-sm">
+                        <thead>
                             
-                    </tbody>
-                </table>
+                            <tr class="align-middle">
+                                <th scope="col" rowspan="2">#No</th>                                    
+                                <th scope="col" rowspan="2">Nama Desa</th>
+                                
+                                @foreach($dataYear[0]['data'] as $dataBulan)
+                                    <th scope="col" colspan="3">{{$dataBulan['bulan']}}</th>
+                                @endforeach
+                                
+                            </tr>
+                            <tr>   
+                                @foreach($dataYear[0]['data'] as $dataBulan)
+                                                                            
+                                    <th scope="col">L</th>
+                                    <th scope="col">P</th>
+                                    <th scope="col">Jml</th>
+                                                                                                                        
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($dataYear as $indexPerDesa=>$dataPerDesa)
+                            <tr class="align-middle">
+                                <th scope="col" > @if(($indexPerDesa+1) === count($dataYear)) {{ '#' }} @else {{$indexPerDesa+1}} @endif </th>                                    
+                                <td scope="col" class="colom-align-left" >{{ $dataPerDesa['desa'] }}</th>                                                                                
+                                
+                                @foreach($dataPerDesa['data'] as $dataPerbulan) 
+                                    <td scope="col">{{ $dataPerbulan['pria'] }}</td>
+                                    <td scope="col">{{ $dataPerbulan['wanita'] }}</td>
+                                    <td scope="col">{{ $dataPerbulan['jml'] }}</td>
+                                @endforeach
+
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        
+                    </table>
+                </div>
+                
             </div>
-            
-        </div>            
+                    
+        @endforeach        
     </div>
-</di    v>
+</div>
 
 </body>
 </html>
