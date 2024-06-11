@@ -36,11 +36,11 @@
                   style="
                     margin-left: 10px;
                     width: 50px;
-                    background: #a83232;
-                    opacity: 0.5;
+                    font-size:14px; 
+                    color: #a83232;
                   "
                 >
-                  &nbsp;
+                  Tinggi
                 </label>
               </div>
               <div class="d-flex flex-row my-1">
@@ -58,11 +58,11 @@
                   style="
                     margin-left: 10px;
                     width: 50px;
-                    background: #f59631;
-                    opacity: 0.5;
+                    font-size:14px;
+                    color:#f59631;
                   "
                 >
-                  &nbsp;
+                  Sedang
                 </label>
               </div>
               <div class="d-flex flex-row my-1">
@@ -80,11 +80,11 @@
                   style="
                     margin-left: 10px;
                     width: 50px;
-                    background: #32a852;
-                    opacity: 0.5;
+                    font-size:14px;
+                    color:#32a852;
                   "
                 >
-                  &nbsp;
+                Rendah
                 </label>
               </div>
             </div>
