@@ -23,9 +23,9 @@
                                 <div class="mb-3">
                                     <label class="col-sm-2 col-form-label">Jenis Kelamin</label>      
                                     <div class="col-sm-10">                              
-                                        <input type="checkbox" name="jenis_kelamin" class="form-check-input" id="gender-pria" value="Pria" {{ $pasien['jenis_kelamin'] === 'Pria' ? 'checked' : '' }} >
+                                        <input type="radio" name="jenis_kelamin" class="form-check-input" id="gender-pria" value="Pria" {{ $pasien['jenis_kelamin'] === 'Pria' ? 'checked' : '' }} >
                                         <label class="form-check-label" for="gender-pria">Pria</label>
-                                        <input type="checkbox" name="jenis_kelamin" class="form-check-input" id="gender-wanita" value="Wanita" {{ $pasien['jenis_kelamin'] === 'Wanita' ? 'checked' : '' }} >
+                                        <input type="radio" name="jenis_kelamin" class="form-check-input" id="gender-wanita" value="Wanita" {{ $pasien['jenis_kelamin'] === 'Wanita' ? 'checked' : '' }} >
                                         <label class="form-check-label" for="gender-wanita">Wanita</label>
                                     </div>
                                 </div>
