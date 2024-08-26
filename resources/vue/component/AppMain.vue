@@ -455,6 +455,8 @@ export default {
         idDesa: idDesa,
       };
 
+      if (this.date !== null) param.date = this.date
+
       axios.get(url, { params: param }).then(function (response) {
         parent.detailPasien = response.data;
       });

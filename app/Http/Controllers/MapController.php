@@ -34,7 +34,11 @@ class MapController extends Controller
                 
                 if($yearMonth !== null) {
                     $month = last(explode('-', $yearMonth));
-                    $jumlahPasien = Pasien::where('lokasi_desa', $json['id'])->whereMonth('tanggal_ditambahkan', $month)->count();
+                    $year = explode('-', $yearMonth)[0];
+                    $jumlahPasien = Pasien::where('lokasi_desa', $json['id'])
+                                    ->whereMonth('tanggal_ditambahkan', $month)
+                                    ->whereYear('tanggal_ditambahkan', $year)
+                                    ->count();
                 } else {
                     $jumlahPasien = Pasien::where('lokasi_desa', $json['id'])->count();
                 }
@@ -85,7 +89,11 @@ class MapController extends Controller
 
     public function getDetailMap(Request $request)
     {
-        $idDesa = (int) $request->idDesa;
+        $request = $request->all();
+        $date = null;
+        $idDesa = (int) $request['idDesa'];
+        
+        if ($request['date'] !== null) $date = $request['date'];
 
         $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');  
         $geojson = \json_decode($geoJsonRaw, true);     
@@ -103,9 +111,17 @@ class MapController extends Controller
             }
         }
 
+        if ($date !== null) { 
+            $month = last(explode('-', $date));
+            $year = explode('-', $date)[0];
+            $semuaPasien = Pasien::where('lokasi_desa', $idDesa)
+                            ->whereMonth('tanggal_ditambahkan', $month)
+                            ->whereYear('tanggal_ditambahkan', $year)    
+                            ->get(); 
+        } else {
+            $semuaPasien = Pasien::where('lokasi_desa', $idDesa)->get();
+        }
         
-
-        $semuaPasien = Pasien::where('lokasi_desa', $idDesa)->get();
         $result = [];
         foreach ($semuaPasien as $pasien) {
             $result[] = [
