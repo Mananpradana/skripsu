@@ -169,8 +169,8 @@
               v-model="chartFilterTahun"
             >
               <option value="">- Pilih Tahun -</option>
-              <option value="2023">2023</option>
-              <option value="2024">2024</option>
+              <option value="2022">2022</option>
+              <option value="2023">2023</option>              
             </select>
           </div>
           <div class="col-6">
@@ -280,9 +280,10 @@ export default {
       markerLatLng: [-1.9608189, 102.4151335],
       geojson: null,
       date: null,
+      yearPeriode: null,
       lokasi_desa: [],
       dominan: [],
-      chartFilterTahun: '',
+      chartFilterTahun: '2023',
       chartFilterDesa: '',
       detailPasien: [
         {
@@ -390,7 +391,9 @@ export default {
     },
   },
   async created() {
-    const response = await fetch("/getMainMap");
+    let year = new Date().getFullYear();
+    year = year-1;
+    const response = await fetch("/getMainMap?yearPeriod=" + year);
     this.geojson = await response.json();
 
     this.lokasi_desa = this.getLocationFromFilterMonth(this.geojson.features);
@@ -456,6 +459,11 @@ export default {
       };
 
       if (this.date !== null) param.date = this.date
+      else { 
+        let year = new Date().getFullYear();
+        year = year-1;
+        param.yearPeriode = year
+      }
 
       axios.get(url, { params: param }).then(function (response) {
         parent.detailPasien = response.data;

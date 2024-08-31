@@ -12,6 +12,7 @@ class MapController extends Controller
     {
         $yearMonth = $request->date ?? null;        
         $dominan = $request->dominan ?? null;               
+        $periode = $request->yearPeriod ?? null;
         
         $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');  
         $geojson = \json_decode($geoJsonRaw, true);        
@@ -40,7 +41,14 @@ class MapController extends Controller
                                     ->whereYear('tanggal_ditambahkan', $year)
                                     ->count();
                 } else {
-                    $jumlahPasien = Pasien::where('lokasi_desa', $json['id'])->count();
+                    if($periode === null) { 
+                        $jumlahPasien = Pasien::where('lokasi_desa', $json['id'])->count();
+                    } else {
+                        $jumlahPasien = Pasien::where('lokasi_desa', $json['id'])
+                            ->whereYear('tanggal_ditambahkan', $periode)
+                            ->count();
+                    }
+                    
                 }
 
                 if($dominan !== null) {
@@ -90,10 +98,13 @@ class MapController extends Controller
     public function getDetailMap(Request $request)
     {
         $request = $request->all();
+                
         $date = null;
-        $idDesa = (int) $request['idDesa'];
+        $periode = null;
+        $idDesa = (int) $request['idDesa'];        
         
-        if ($request['date'] !== null) $date = $request['date'];
+        if (isset($request['date']) && $request['date'] !== null) $date = $request['date'];
+        if (isset($request['yearPeriode']) && $request['yearPeriode'] !== null ) $periode = $request['yearPeriode'];
 
         $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');  
         $geojson = \json_decode($geoJsonRaw, true);     
@@ -110,7 +121,7 @@ class MapController extends Controller
                 ];  
             }
         }
-
+        
         if ($date !== null) { 
             $month = last(explode('-', $date));
             $year = explode('-', $date)[0];
@@ -119,7 +130,13 @@ class MapController extends Controller
                             ->whereYear('tanggal_ditambahkan', $year)    
                             ->get(); 
         } else {
-            $semuaPasien = Pasien::where('lokasi_desa', $idDesa)->get();
+            if($periode === null) { 
+                $semuaPasien = Pasien::where('lokasi_desa', $idDesa)->get();
+            } else {
+                $semuaPasien = Pasien::where('lokasi_desa', $idDesa)
+                ->whereYear('tanggal_ditambahkan', $periode)    
+                ->get();
+            }
         }
         
         $result = [];
