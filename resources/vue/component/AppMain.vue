@@ -448,8 +448,10 @@ export default {
         : "#32a852"; // hijau
     },
     resetFilter() {
+      let year = new Date().getFullYear();
+      year = year-1;
       this.dominan = [];
-      this.date = null;
+      this.date = year;
     },
     showModal(idDesa) {
       var parent = this;
