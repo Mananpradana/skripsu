@@ -417,6 +417,8 @@ export default {
 
       if (this.date !== null) {
         param.date = this.date;
+      } else {
+        param.yearPeriod = this.yearPeriode;
       }
 
       if (this.dominan !== null) {
@@ -451,7 +453,9 @@ export default {
       let year = new Date().getFullYear();
       year = year-1;
       this.dominan = [];
-      this.date = year;
+      this.date = null;
+      this.yearPeriode = year;
+
     },
     showModal(idDesa) {
       var parent = this;
