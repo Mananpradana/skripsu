@@ -371,6 +371,7 @@ export default {
         );
 
         layer.on("click", function (e) {
+          console.log(layer)
           parent.$refs.skripsuMap.mapObject.fitBounds(layer.getBounds());
           parent.showModal(feature.properties.id);
         });
@@ -407,13 +408,17 @@ export default {
     this.chartOptions.series.data = this.geojson.chartSeries;
   },
   methods: {
-    filterMonth() {
+    filterMonth(idDesa) {
       var url = "/getMainMap";
       var param = {
         date: null,
         dominan: null,
       };
       parent = this;
+
+      if(idDesa) {
+        param.id_desa = idDesa
+      }
 
       if (this.date !== null) {
         param.date = this.date;
@@ -424,7 +429,7 @@ export default {
       if (this.dominan !== null) {
         param.dominan = this.dominan;
       }
-
+      
       axios.get(url, { params: param }).then(function (response) {
         parent.geojson = response.data;
         parent.chartOptions.title.text = parent.geojson.chartTitle;
@@ -432,8 +437,11 @@ export default {
           crosshair: true,
           categories: parent.geojson.chartXSeries,
         };
-
-        parent.chartOptions.series.data = parent.geojson.chartSeries;
+        
+        if(!idDesa) {
+          parent.chartOptions.series.data = parent.geojson.chartSeries;
+        }
+        
       });
     },
     getLocationFromFilterMonth(features) {
@@ -478,6 +486,7 @@ export default {
       $("#exampleModal").modal("show");
     },
     filterChart() {
+
       var url = "/getChartSeries";
       var parent = this;
       var param = {
@@ -486,13 +495,16 @@ export default {
       };
 
       axios.get(url, { params: param }).then(function (response) {
-        // console.log(response);
+        
         parent.chartOptions.xAxis = {
           crosshair: true,
           categories: response.data.chartXSeries,
         };
         parent.chartOptions.series.data = response.data.chartSeries;
       });
+
+      this.yearPeriode = this.chartFilterTahun
+      this.filterMonth(this.chartFilterDesa)
     },
   },
 };

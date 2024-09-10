@@ -13,6 +13,7 @@ class MapController extends Controller
         $yearMonth = $request->date ?? null;        
         $dominan = $request->dominan ?? null;               
         $periode = $request->yearPeriod ?? null;
+        $choosendDesa = $request->id_desa ?? null;   
         
         $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');  
         $geojson = \json_decode($geoJsonRaw, true);        
@@ -29,10 +30,15 @@ class MapController extends Controller
         
         $series = [];
         $xSeries = [];
-        foreach($geojson as $json) {
+        foreach($geojson as $json) {            
             $feature = [];            
             if($json["sub_district"] === 'TABIR SELATAN') {
                 
+                if ($choosendDesa !== null) {
+                    if($json['id'] !== $choosendDesa) continue;   
+                    $yearMonth = null;
+                }
+
                 if($yearMonth !== null) {
                     $month = last(explode('-', $yearMonth));
                     $year = explode('-', $yearMonth)[0];
