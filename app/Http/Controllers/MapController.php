@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Admin\ProfileController;
 use App\Models\Pasien;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ class MapController extends Controller
         $dominan = $request->dominan ?? null;               
         $periode = $request->yearPeriod ?? null;
         $choosendDesa = $request->id_desa ?? null;   
+        $range = ProfileController::getConfigRange();
         
         $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');  
         $geojson = \json_decode($geoJsonRaw, true);        
@@ -58,15 +60,15 @@ class MapController extends Controller
                 }
 
                 if($dominan !== null) {
-                    if(in_array('parah', $dominan) === false && $jumlahPasien > 30 ) {
+                    if(in_array('parah', $dominan) === false && $jumlahPasien > $range['parah'] ) {
                         continue;
                     }
 
-                    if(in_array('sedang', $dominan) === false && $jumlahPasien > 15 && $jumlahPasien <= 30 ) {
+                    if(in_array('sedang', $dominan) === false && $jumlahPasien > $range['sedang'] && $jumlahPasien <= $range['parah'] ) {
                         continue;
                     }
 
-                    if(in_array('aman', $dominan) === false && $jumlahPasien <= 15 ) {
+                    if(in_array('aman', $dominan) === false && $jumlahPasien <= $range['sedang'] ) {
                         continue;
                     }
                 }

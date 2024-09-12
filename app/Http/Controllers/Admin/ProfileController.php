@@ -8,7 +8,6 @@ use App\Models\Range;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
@@ -84,6 +83,28 @@ class ProfileController extends Controller
         $range->save();
 
         return back()->with("status", "Range Warna Legenda has been updated successfully!");   
+    }
+
+    public static function getConfigRange(): array
+    {
+        $range = Range::find(1);
+
+        return [
+            'parah' => $range->parah,
+            'sedang' => $range->sedang,
+            'rendah' => $range->rendah,
+        ];
+    }
+
+    public function getConfigRangeJson()
+    {
+        $range = Range::find(1);
+
+        return response()->json([
+            'parah' => $range->parah,
+            'sedang' => $range->sedang,
+            'rendah' => $range->rendah,
+        ]);
     }
 
 }

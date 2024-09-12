@@ -108,7 +108,7 @@
         <div class="col-12" style="width: 100px">
           <div class="mb-3 mt-1">
             <div class="row">
-              <div class="col-6 pe-0">> 30</div>
+              <div class="col-6 pe-0" >{{  '> '+parah  }}</div>
               <div class="col-6 ps-0">
                 <div
                   style="
@@ -121,7 +121,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-6 pe-0">16 - 30</div>
+              <div class="col-6 pe-0">{{  sedang+' - '+parah  }} </div>
               <div class="col-6 ps-0">
                 <div
                   style="
@@ -134,7 +134,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-6 pe-0">0 - 15</div>
+              <div class="col-6 pe-0">{{ rendah+' - '+sedang }}</div>
               <div class="col-6 ps-0">
                 <div
                   style="
@@ -254,7 +254,7 @@
 
 <script>
 import { Chart } from "highcharts-vue";
-
+import { mapGetters } from 'vuex';
 import { LMap, LTileLayer, LMarker, LGeoJson, LControl } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { VueDatePicker } from "@mathieustan/vue-datepicker";
@@ -282,7 +282,7 @@ export default {
       date: null,
       yearPeriode: null,
       lokasi_desa: [],
-      dominan: [],
+      dominan: [],      
       chartFilterTahun: '2023',
       chartFilterDesa: '',
       detailPasien: [
@@ -339,6 +339,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['parah', 'sedang', 'rendah']),
     options() {
       return {
         onEachFeature: this.onEachFeatureFunction,
@@ -370,8 +371,7 @@ export default {
           { permanent: false, sticky: false }
         );
 
-        layer.on("click", function (e) {
-          console.log(layer)
+        layer.on("click", function (e) {          
           parent.$refs.skripsuMap.mapObject.fitBounds(layer.getBounds());
           parent.showModal(feature.properties.id);
         });
@@ -392,6 +392,7 @@ export default {
     },
   },
   async created() {
+    await this.$store.dispatch('getRange');
     let year = new Date().getFullYear();
     year = year-1;
     const response = await fetch("/getMainMap?yearPeriod=" + year);
@@ -404,11 +405,17 @@ export default {
       crosshair: true,
       categories: this.geojson.chartXSeries,
     };
-    // this.chartOptions.series.name = "Pasien"
-    this.chartOptions.series.data = this.geojson.chartSeries;
+    
+    this.chartOptions.series.data = this.geojson.chartSeries; 
+    console.log('ini parah di created ' + this.parah)       
   },
-  methods: {
+  // async beforeMount(){
+  //   await this.$store.dispatch('getRange');
+  //   console.log('ini parah di before mount ' + this.parah)
+  // },  
+  methods: {    
     filterMonth(idDesa) {
+      console.log(idDesa)
       var url = "/getMainMap";
       var param = {
         date: null,
@@ -416,7 +423,7 @@ export default {
       };
       parent = this;
 
-      if(idDesa) {
+      if(typeof idDesa === "string" ) {
         param.id_desa = idDesa
       }
 
@@ -451,9 +458,10 @@ export default {
       return location;
     },
     setLayerFillColor(d) {
-      return d > 30
+      console.log('parah ' + this.parah)
+      return d > this.parah
         ? "#a83232" // merah
-        : d > 15
+        : d > this.sedang
         ? "#f59631" // oren
         : "#32a852"; // hijau
     },
@@ -503,6 +511,7 @@ export default {
         parent.chartOptions.series.data = response.data.chartSeries;
       });
 
+      
       this.yearPeriode = this.chartFilterTahun
       this.filterMonth(this.chartFilterDesa)
     },

@@ -2,6 +2,7 @@ import './bootstrap';
 
 import Vue from 'vue'
 import App from '../vue/component/AppMain'
+import store from '../vue/store'
 
 import { Icon } from 'leaflet';
 
@@ -22,5 +23,6 @@ Vue.use(HighchartsVue, {
 
 const app = new Vue({
     el: '#app',
+    store: store,
     components: { App, Icon }    
 });
