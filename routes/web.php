@@ -44,6 +44,8 @@ Route::get('/laporan/export', [App\Http\Controllers\Admin\LaporanController::cla
 
 Route::get('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'index']);
 Route::post('/profile/change-password', [App\Http\Controllers\Admin\ProfileController::class, 'changePassword']);
+Route::get('/config_range', [App\Http\Controllers\Admin\ProfileController::class, 'configRangePage']);
+Route::post('/config_range/save', [App\Http\Controllers\Admin\ProfileController::class, 'saveConfigRange']);
 
 Auth::routes();
 

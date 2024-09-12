@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Range;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -59,4 +60,30 @@ class ProfileController extends Controller
 
         return back()->with("status", "Password changed successfully!");   
     }
+
+
+    public function configRangePage()
+    {
+        $range = Range::find(1)->toArray();
+        return view('range', ['range' => $range]);
+    }
+
+    public function saveConfigRange(Request $request)
+    {
+        $range = Range::find(1);
+        $request->validate([
+            'parah' => 'required|integer',
+            'sedang' => 'required|integer',
+            'rendah' => 'required|integer',
+        ]);
+
+        $formData = $request->all();
+        $range->parah = $formData['parah'];
+        $range->sedang = $formData['sedang'];
+        $range->rendah = $formData['rendah'];
+        $range->save();
+
+        return back()->with("status", "Range Warna Legenda has been updated successfully!");   
+    }
+
 }

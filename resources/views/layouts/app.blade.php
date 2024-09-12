@@ -68,6 +68,9 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ url('/config_range') }}" >
+                                        {{ 'Atur Range Warna Legenda' }}
+                                    </a>
                                     <a class="dropdown-item" href="{{ url('/profile') }}" >
                                         {{ 'Profile' }}
                                     </a>

@@ -13,10 +13,9 @@
                     <div class="container">
                         
                         <div class="col position-relative">
-                            <!-- <button class="btn btn-danger position-absolute end-0">
+                            <button class="btn btn-danger position-absolute end-0">
                                 Tambah Lokasi
-                            </button> -->
-                            
+                            </button>                            
                         </div>
 
                         <div class="col-12 position-relative" >
