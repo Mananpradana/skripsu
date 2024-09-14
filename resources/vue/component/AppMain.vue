@@ -234,7 +234,7 @@
                   <td>{{ value.jenis_kelamin }}</td>
                   <td>{{ value.umur }}</td>
                   <td>{{ value.tanggal_periksa }}</td>
-                  <td>{{ value.keterangan }}</td>
+                <td>{{ value.keterangan }}</td>
                 </tr>
               </tbody>
             </table>
@@ -325,11 +325,11 @@ export default {
           data: [],
           zones: [
             {
-              value: 15,
+              value: this.rendah,
               color: "#32a852", // hijau
             },
             {
-              value: 30,
+              value: this.sedang,
               color: "#f59631", // oren
             },
             {
@@ -395,6 +395,7 @@ export default {
   },
   async created() {
     await this.$store.dispatch('getRange');
+
     let year = new Date().getFullYear();
     year = year-1;
     const response = await fetch("/getMainMap?yearPeriod=" + year);
@@ -407,14 +408,26 @@ export default {
       crosshair: true,
       categories: this.geojson.chartXSeries,
     };
+
+    this.chartOptions.series.zones = [
+            {
+              value: this.sedang,
+              color: "#32a852", // hijau
+            },
+            {
+              value: this.parah,
+              color: "#f59631", // oren
+            },
+            {
+              color: "#a83232", //merah
+            }
+          ]
     
+          console.log(this.chartOptions)
+
     this.chartOptions.series.data = this.geojson.chartSeries; 
     console.log('ini parah di created ' + this.parah)       
-  },
-  // async beforeMount(){
-  //   await this.$store.dispatch('getRange');
-  //   console.log('ini parah di before mount ' + this.parah)
-  // },  
+  }, 
   methods: {    
     filterMonth(idDesa) {
       console.log(idDesa)
@@ -445,7 +458,7 @@ export default {
         parent.chartOptions.xAxis = {
           crosshair: true,
           categories: parent.geojson.chartXSeries,
-        };
+        }; 
         
         if(!idDesa) {
           parent.chartOptions.series.data = parent.geojson.chartSeries;
