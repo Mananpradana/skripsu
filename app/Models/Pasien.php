@@ -32,6 +32,7 @@ class Pasien extends Model
         'jenis_kelamin',
         'umur',
         'lokasi_desa', 
-        'tanggal_ditambahkan'        
+        'tanggal_ditambahkan', 
+        'keterangan'
     ];
 }

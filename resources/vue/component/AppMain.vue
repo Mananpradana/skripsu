@@ -209,7 +209,7 @@
       <div class="modal-dialog" style="max-width: 1000px">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Pesien</h1>
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Pasien</h1>
             <button
               type="button"
               class="btn-close"
@@ -225,6 +225,7 @@
                   <th scope="col">Jenis Kelamin</th>
                   <th scope="col">Umur</th>
                   <th scope="col">Tanggal Periksa</th>
+                  <th scope="col">Keterangan</th>
                 </tr>
               </thead>
               <tbody>
@@ -233,6 +234,7 @@
                   <td>{{ value.jenis_kelamin }}</td>
                   <td>{{ value.umur }}</td>
                   <td>{{ value.tanggal_periksa }}</td>
+                  <td>{{ value.keterangan }}</td>
                 </tr>
               </tbody>
             </table>

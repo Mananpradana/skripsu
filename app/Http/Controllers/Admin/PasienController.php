@@ -62,6 +62,7 @@ class PasienController extends Controller
         $pasien->umur = (int) $pasienRequest['umur'];
         $pasien->lokasi_desa = $pasienRequest['lokasi_desa'];
         $pasien->tanggal_ditambahkan = Carbon::parse($pasienRequest['tanggal'])->toDateTimeString();
+        $pasien->keterangan = $request['keterangan'];
 
         $pasien->save();
 
@@ -88,6 +89,7 @@ class PasienController extends Controller
         $pasien->umur = (int) $pasienRequest['umur'];
         $pasien->lokasi_desa = $pasienRequest['lokasi_desa'];
         $pasien->tanggal_ditambahkan = Carbon::parse($pasienRequest['tanggal'])->toDateTimeString();
+        $pasien->keterangan = $request['keterangan'];
 
         $pasien->save();
 
