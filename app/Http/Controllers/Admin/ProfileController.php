@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
-{   
+{
     use AuthenticatesUsers;
 
     /**
@@ -28,14 +28,13 @@ class ProfileController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
-
+        $this->middleware('auth')->except('getConfigRangeJson');
     }
 
     public function index()
     {
         $user = auth()->user();
-        
+
         $data['admin'] = [
             'username' => $user->name,
             'email' => $user->email
@@ -44,20 +43,20 @@ class ProfileController extends Controller
     }
 
     public function changePassword(Request $request)
-    {        
+    {
         $request->validate([
-            'newPassword' => 'required'            
+            'newPassword' => 'required'
         ]);
 
         $formData = $request->all();
         $user = auth()->user();
-        
+
 
         User::where('email', $user->email)->update([
             'password' => Hash::make($formData['newPassword'])
         ]);
 
-        return back()->with("status", "Password changed successfully!");   
+        return back()->with("status", "Password changed successfully!");
     }
 
 
@@ -82,7 +81,7 @@ class ProfileController extends Controller
         $range->rendah = $formData['rendah'];
         $range->save();
 
-        return back()->with("status", "Range Warna Legenda has been updated successfully!");   
+        return back()->with("status", "Range Warna Legenda has been updated successfully!");
     }
 
     public static function getConfigRange(): array
@@ -95,16 +94,4 @@ class ProfileController extends Controller
             'rendah' => $range->rendah,
         ];
     }
-
-    public function getConfigRangeJson()
-    {
-        $range = Range::find(1);
-
-        return response()->json([
-            'parah' => $range->parah,
-            'sedang' => $range->sedang,
-            'rendah' => $range->rendah,
-        ]);
-    }
-
 }

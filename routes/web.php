@@ -46,7 +46,7 @@ Route::get('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'in
 Route::post('/profile/change-password', [App\Http\Controllers\Admin\ProfileController::class, 'changePassword']);
 Route::get('/config_range', [App\Http\Controllers\Admin\ProfileController::class, 'configRangePage']);
 Route::post('/config_range/save', [App\Http\Controllers\Admin\ProfileController::class, 'saveConfigRange']);
-Route::get('/config_range/get', [App\Http\Controllers\Admin\ProfileController::class, 'getConfigRange']);
+Route::get('/config_range/get', [MapController::class, 'getConfigRangeJson']);
 
 Auth::routes();
 

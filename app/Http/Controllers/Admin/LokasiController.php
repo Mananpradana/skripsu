@@ -40,7 +40,7 @@ class LokasiController extends Controller
     }
 
     public function index()
-    {       
+    {
         $data['lokasi'] = self::getAllLocation();
         return view('lokasi.index_lokasi', $data);
     }
@@ -61,62 +61,58 @@ class LokasiController extends Controller
         $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');
 
         $geojson = \json_decode($geoJsonRaw, true);
-    
+
         $location = [];
-        foreach($geojson as $json) {
+        foreach ($geojson as $json) {
             $feature = [];
 
-            if($json["sub_district"] === 'TABIR SELATAN') {                
-            
-                $feature = [                    
+            if ($json["sub_district"] === 'TABIR SELATAN') {
+
+                $feature = [
                     "id" => $json["id"],
                     "Provinsi" => $json["province"],
                     "Kabupaten" => $json["district"],
-                    "Kecamatan" => $json["sub_district"], 
-                    "Desa" => $json["village"],                    
-                    "coordinates" => []                    
+                    "Kecamatan" => $json["sub_district"],
+                    "Desa" => $json["village"],
+                    "coordinates" => []
                 ];
 
                 $feature["coordinates"] = [$json["border"]];
 
                 $location[] = $feature;
             }
-                        
-        }    
+        }
 
         return $location;
     }
 
-    public static function getAllLocationMappedId() 
+    public static function getAllLocationMappedId()
     {
         $geoJsonRaw = file_get_contents(storage_path('app') . DIRECTORY_SEPARATOR . 'jambi_villages_restored.geojson');
 
         $geojson = \json_decode($geoJsonRaw, true);
-    
+
         $location = [];
-        foreach($geojson as $json) {
+        foreach ($geojson as $json) {
             $feature = [];
 
-            if($json["sub_district"] === 'TABIR SELATAN') {                
-            
-                $feature = [                    
+            if ($json["sub_district"] === 'TABIR SELATAN') {
+
+                $feature = [
                     "id" => $json["id"],
                     "Provinsi" => $json["province"],
                     "Kabupaten" => $json["district"],
-                    "Kecamatan" => $json["sub_district"], 
-                    "Desa" => $json["village"],                    
-                    "coordinates" => []                    
+                    "Kecamatan" => $json["sub_district"],
+                    "Desa" => $json["village"],
+                    "coordinates" => []
                 ];
 
                 $feature["coordinates"] = [$json["border"]];
 
                 $location[$json["id"]] = $feature;
             }
-                        
-        }    
+        }
 
         return $location;
     }
-
-
 }

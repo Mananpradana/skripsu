@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Admin\ProfileController;
 use App\Models\Pasien;
+use App\Models\Range;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -198,5 +199,16 @@ class MapController extends Controller
         ];
 
         return response()->json($result, 200);
+    }
+
+    public function getConfigRangeJson()
+    {
+        $range = Range::find(1);
+
+        return response()->json([
+            'parah' => $range->parah,
+            'sedang' => $range->sedang,
+            'rendah' => $range->rendah,
+        ]);
     }
 }
