@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Admin\LokasiController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Models\Pasien;
 use App\Models\Range;
@@ -33,10 +34,19 @@ class MapController extends Controller
 
         $series = [];
         $xSeries = [];
-        foreach ($geojson as $json) {
-            $feature = [];
-            if ($json["sub_district"] === 'TABIR SELATAN') {
-
+        $seriesPasienBaru = [];
+        $seriesPasienLama = [];
+        $seriesPasienSembuh = [];
+        $seriesPasienMeninggal = [];
+        $seriesTotal = [];
+        $jumlahPasienPenderitaBaru = 0;
+        $jumlahPasienPenderitaLama = 0;
+        $jumlahPasienSembuh = 0;
+        $jumlahPasienMininggal = 0;
+        foreach($geojson as $json) {            
+            $feature = [];            
+            if($json["sub_district"] === 'TABIR SELATAN') {
+                
                 if ($choosendDesa !== null) {
                     if ($json['id'] !== $choosendDesa) continue;
                     $yearMonth = null;
@@ -46,21 +56,83 @@ class MapController extends Controller
                     $month = last(explode('-', $yearMonth));
                     $year = explode('-', $yearMonth)[0];
                     $jumlahPasien = Pasien::where('lokasi_desa', $json['id'])
-                        ->whereMonth('tanggal_ditambahkan', $month)
-                        ->whereYear('tanggal_ditambahkan', $year)
-                        ->count();
+                                    ->whereMonth('tanggal_ditambahkan', $month)
+                                    ->whereYear('tanggal_ditambahkan', $year)
+                                    ->count();
+                    
+                    $jumlahPasienPenderitaBaru = Pasien::where('lokasi_desa', $json['id'])
+                                    ->whereMonth('tanggal_ditambahkan', $month)
+                                    ->whereYear('tanggal_ditambahkan', $year)
+                                    ->where('keterangan', 'Penderita Baru')
+                                    ->count();
+
+                    $jumlahPasienPenderitaLama = Pasien::where('lokasi_desa', $json['id'])
+                                    ->whereMonth('tanggal_ditambahkan', $month)
+                                    ->whereYear('tanggal_ditambahkan', $year)
+                                    ->where('keterangan', 'Penderita Lama')
+                                    ->count();
+                    
+                    $jumlahPasienSembuh = Pasien::where('lokasi_desa', $json['id'])
+                                    ->whereMonth('tanggal_ditambahkan', $month)
+                                    ->whereYear('tanggal_ditambahkan', $year)
+                                    ->where('keterangan', 'Pasien Sembuh')
+                                    ->count();
+
+                    $jumlahPasienMininggal = Pasien::where('lokasi_desa', $json['id'])
+                                    ->whereMonth('tanggal_ditambahkan', $month)
+                                    ->whereYear('tanggal_ditambahkan', $year)
+                                    ->where('keterangan', 'Meninggal Dunia')
+                                    ->count();
+
+                                        
                 } else {
                     if ($periode === null) {
                         $jumlahPasien = Pasien::where('lokasi_desa', $json['id'])->count();
+                        $jumlahPasienPenderitaBaru = Pasien::where('lokasi_desa', $json['id'])                            
+                            ->where('keterangan', 'Penderita Baru')
+                            ->count();
+
+                        $jumlahPasienPenderitaLama = Pasien::where('lokasi_desa', $json['id'])                            
+                            ->where('keterangan', 'Penderita Lama')
+                            ->count();
+            
+                        $jumlahPasienSembuh = Pasien::where('lokasi_desa', $json['id'])                            
+                            ->where('keterangan', 'Pasien Sembuh')
+                            ->count();
+
+                        $jumlahPasienMininggal = Pasien::where('lokasi_desa', $json['id'])                            
+                            ->where('keterangan', 'Meninggal Dunia')
+                            ->count();
+
                     } else {
                         $jumlahPasien = Pasien::where('lokasi_desa', $json['id'])
                             ->whereYear('tanggal_ditambahkan', $periode)
                             ->count();
-                    }
-                }
 
-                if ($dominan !== null) {
-                    if (in_array('parah', $dominan) === false && $jumlahPasien > $range['parah']) {
+                        $jumlahPasienPenderitaBaru = Pasien::where('lokasi_desa', $json['id'])
+                            ->whereYear('tanggal_ditambahkan', $periode)
+                            ->where('keterangan', 'Penderita Baru')
+                            ->count();
+
+                        $jumlahPasienPenderitaLama = Pasien::where('lokasi_desa', $json['id'])
+                            ->whereYear('tanggal_ditambahkan', $periode)
+                            ->where('keterangan', 'Penderita Lama')
+                            ->count();
+            
+                        $jumlahPasienSembuh = Pasien::where('lokasi_desa', $json['id'])
+                            ->whereYear('tanggal_ditambahkan', $periode)
+                            ->where('keterangan', 'Pasien Sembuh')
+                            ->count();
+
+                        $jumlahPasienMininggal = Pasien::where('lokasi_desa', $json['id'])
+                            ->whereYear('tanggal_ditambahkan', $periode)
+                            ->where('keterangan', 'Meninggal Dunia')
+                            ->count();
+                    }
+                }                
+
+                if($dominan !== null) {
+                    if(in_array('parah', $dominan) === false && $jumlahPasien > $range['parah'] ) {
                         continue;
                     }
 
@@ -81,21 +153,52 @@ class MapController extends Controller
                         "Kabupaten" => $json["district"],
                         "Kecamatan" => $json["sub_district"],
                         "Desa" => $json["village"],
-                        "Pasien" => strval($jumlahPasien)
+                        "Pasien" => strval($jumlahPasien), 
+                        "PasienBaru" =>  strval($jumlahPasienPenderitaBaru), 
+                        "PasienLama" =>  strval($jumlahPasienPenderitaLama), 
+                        "PasienSemuh" =>  strval($jumlahPasienSembuh),
+                        "PasienMeninggal" => strval($jumlahPasienMininggal)
                     ],
                     "geometry" => [
                         "type" => "Polygon",
                         "coordinates" => []
                     ]
                 ];
-                $series[] = $jumlahPasien;
+
+                $seriesPasienBaru[] = $jumlahPasienPenderitaBaru;
+                $seriesPasienLama[] = $jumlahPasienPenderitaLama;
+                $seriesPasienSembuh[] = $jumlahPasienSembuh;
+                $seriesPasienMeninggal[] = $jumlahPasienMininggal;
+                $seriesTotal[] = $jumlahPasien;
+                
                 $xSeries[] = $json["village"];
 
                 $feature["geometry"]["coordinates"] = [$json["border"]];
 
                 $featureCollection["features"][] = $feature;
-            }
+            }            
         }
+
+        $series[] = [
+            'name' => 'Pasien Baru', 
+            'data' => $seriesPasienBaru
+        ];
+        $series[] = [
+            'name' => 'Pasien Lama',
+            'data' => $seriesPasienLama
+        ];
+        $series[] = [
+            'name' => 'Pasien Sembuh',
+            'data' => $seriesPasienSembuh
+        ];
+        $series[] = [
+            'name' => 'Pasien Meninggal',
+            'data' => $seriesPasienMeninggal
+        ];
+        $series[] = [
+            'name' => 'Total',
+            'data' => $seriesTotal
+        ];
 
         $featureCollection['chartSeries'] = $series;
         $featureCollection['chartXSeries'] = $xSeries;
@@ -166,16 +269,46 @@ class MapController extends Controller
     public function getChartSeries(Request $request)
     {
         $tahun = $request->tahun;
-        $idDesa = $request->idDesa;
-
+        $idDesa = $request->idDesa;        
+        $series = [];
         $pasienSebulan = [];
+        $seriesPasienBaru = [];
+        $seriesPasienLama = [];
+        $seriesPasienSembuh = [];
+        $seriesPasienMeninggal = [];
 
         for ($a = 1; $a <= 12; $a++) {
 
-            $pasienSebulan[] =  Pasien::whereYear('tanggal_ditambahkan', $tahun)
+            $querySebulan  =  Pasien::whereYear('tanggal_ditambahkan', $tahun)
+                ->whereMonth('tanggal_ditambahkan', $a);                
+            if($idDesa !== null) $querySebulan->where('lokasi_desa', $idDesa);                
+            $pasienSebulan[] = $querySebulan->count();
+
+            $queryPasienBaru =  Pasien::whereYear('tanggal_ditambahkan', $tahun)
                 ->whereMonth('tanggal_ditambahkan', $a)
-                ->where('lokasi_desa', $idDesa)
-                ->count();
+                ->where('keterangan', 'Penderita Baru');
+            if($idDesa !== null) $queryPasienBaru->where('lokasi_desa', $idDesa);
+            $seriesPasienBaru[] = $queryPasienBaru->count();
+            
+            $queryPasienLama =  Pasien::whereYear('tanggal_ditambahkan', $tahun)
+                ->whereMonth('tanggal_ditambahkan', $a)
+                ->where('keterangan', 'Penderita Lama');
+            if($idDesa !== null) $queryPasienLama->where('lokasi_desa', $idDesa);            
+            $seriesPasienLama[] = $queryPasienLama->count();
+            
+
+            $queryPasienSembuh =  Pasien::whereYear('tanggal_ditambahkan', $tahun)
+                ->whereMonth('tanggal_ditambahkan', $a)
+                ->where('keterangan', 'Pasien Sembuh');
+            if($idDesa !== null) $queryPasienSembuh->where('lokasi_desa', $idDesa);                
+            $seriesPasienSembuh[] = $queryPasienSembuh->count();
+
+            $queryPasienMeninggal =  Pasien::whereYear('tanggal_ditambahkan', $tahun)
+                ->whereMonth('tanggal_ditambahkan', $a)
+                ->where('keterangan', 'Meninggal Dunia');            
+            if($idDesa !== null) $queryPasienMeninggal->where('lokasi_desa', $idDesa);                
+            $seriesPasienMeninggal[] = $queryPasienMeninggal->count();
+                        
         }
 
         $bulanSeries = [
@@ -193,11 +326,66 @@ class MapController extends Controller
             'Desember'
         ];
 
-        $result = [
-            'chartXSeries' => $bulanSeries,
-            'chartSeries' => $pasienSebulan
+
+
+        $series[] = [
+            'name' => 'Pasien Baru', 
+            'data' => $seriesPasienBaru
+        ];
+        $series[] = [
+            'name' => 'Pasien Lama',
+            'data' => $seriesPasienLama
+        ];
+        $series[] = [
+            'name' => 'Pasien Sembuh',
+            'data' => $seriesPasienSembuh
+        ];
+        $series[] = [
+            'name' => 'Pasien Meninggal',
+            'data' => $seriesPasienMeninggal
+        ];
+        $series[] = [
+            'name' => 'Total',
+            'data' => $pasienSebulan
         ];
 
+        $result = [
+            'chartXSeries' => $bulanSeries,
+            'chartSeries' => $series
+        ];
+
+        if($idDesa !== null){
+            $lokasi = LokasiController::getAllLocationMappedId();
+
+            $feature = [];
+            foreach($lokasi as $lok) {
+
+                if($lok['id'] !== $idDesa) continue;
+
+                $feature = [
+                    "type" => "Feature",
+                    "properties" => [
+                        "id" => $lok['id'],
+                        "Provinsi" => $lok["Provinsi"],
+                        "Kabupaten" => $lok["Kabupaten"],
+                        "Kecamatan" => $lok["Kecamatan"],
+                        "Desa" => $lok["Desa"],
+                        // "Pasien" => strval($pasienSebulan), 
+                        // "PasienBaru" =>  strval($seriesPasienBaru), 
+                        // "PasienLama" =>  strval($seriesPasienLama), 
+                        // "PasienSemuh" =>  strval($seriesPasienSembuh),
+                        // "PasienMeninggal" => strval($seriesPasienMeninggal)
+                    ],
+                    "geometry" => [
+                        "type" => "Polygon",
+                        "coordinates" => $lok['coordinates']
+                    ]
+                ];
+            }
+
+            $result['features'] = $feature;
+        }
+        
         return response()->json($result, 200);
     }
 

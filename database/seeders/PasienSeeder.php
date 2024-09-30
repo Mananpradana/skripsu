@@ -21,7 +21,14 @@ class PasienSeeder extends Seeder
 
         $lokasi_desa = LokasiController::getAllLocationMappedId();
 
-        for($a = 0; $a < 100; $a++) {
+        $keterangan = [
+            'Penderita Baru', 
+            'Penderita Lama', 
+            'Pasien Sembuh', 
+            'Meninggal Dunia'
+        ];
+
+        for($a = 0; $a < 1000; $a++) {
             
             $pasienModel = new Pasien();
             $pasienModel->nama = $faker->name();
@@ -29,7 +36,8 @@ class PasienSeeder extends Seeder
             $pasienModel->umur = $faker->numberBetween(20, 75);
             $pasienModel->umur = $faker->numberBetween(20, 75);
             $pasienModel->lokasi_desa = $faker->randomKey($lokasi_desa);
-            $pasienModel->tanggal_ditambahkan = $faker->dateTimeBetween('-4 months', 'this month');
+            $pasienModel->keterangan = $keterangan[rand(0,3)];
+            $pasienModel->tanggal_ditambahkan = $faker->dateTimeBetween('-12 months', 'this month');
             $pasienModel->save();
         }
                 

@@ -171,6 +171,7 @@
               <option value="">- Pilih Tahun -</option>
               <option value="2022">2022</option>
               <option value="2023">2023</option>              
+              <option value="2024">2024</option>              
             </select>
           </div>
           <div class="col-6">
@@ -285,7 +286,7 @@ export default {
       yearPeriode: null,
       lokasi_desa: [],
       dominan: [],      
-      chartFilterTahun: '2023',
+      chartFilterTahun: '',
       chartFilterDesa: '',
       detailPasien: [
         {
@@ -319,23 +320,24 @@ export default {
           title: {
             text: "Desa",
           },
+          categories: []
         },
         series: {
-          name: "Jumlah Pasien",
-          data: [],
-          zones: [
-            {
-              value: this.rendah,
-              color: "#32a852", // hijau
-            },
-            {
-              value: this.sedang,
-              color: "#f59631", // oren
-            },
-            {
-              color: "#a83232", //merah
-            },
-          ],
+          // name: "Jumlah Pasien",
+          // data: [],
+          // zones: [
+          //   {
+          //     value: this.rendah,
+          //     color: "#32a852", // hijau
+          //   },
+          //   {
+          //     value: this.sedang,
+          //     color: "#f59631", // oren
+          //   },
+          //   {
+          //     color: "#a83232", //merah
+          //   },
+          // ],
         },
       },
     };
@@ -408,29 +410,27 @@ export default {
       crosshair: true,
       categories: this.geojson.chartXSeries,
     };
-
-    this.chartOptions.series.zones = [
-            {
-              value: this.sedang,
-              color: "#32a852", // hijau
-            },
-            {
-              value: this.parah,
-              color: "#f59631", // oren
-            },
-            {
-              color: "#a83232", //merah
-            }
-          ]
     
-          console.log(this.chartOptions)
+    // this.chartOptions.series.zones = [
+    //         {
+    //           value: this.sedang,
+    //           color: "#32a852", // hijau
+    //         },
+    //         {
+    //           value: this.parah,
+    //           color: "#f59631", // oren
+    //         },
+    //         {
+    //           color: "#a83232", //merah
+    //         }
+    //       ]    
 
-    this.chartOptions.series.data = this.geojson.chartSeries; 
-    console.log('ini parah di created ' + this.parah)       
-  }, 
+    this.chartOptions.series = this.geojson.chartSeries; 
+    console.log(this.chartOptions)
+  },
   methods: {    
     filterMonth(idDesa) {
-      console.log(idDesa)
+      
       var url = "/getMainMap";
       var param = {
         date: null,
@@ -440,6 +440,10 @@ export default {
 
       if(typeof idDesa === "string" ) {
         param.id_desa = idDesa
+        this.chartFilterDesa = idDesa
+      } else {
+        this.chartFilterDesa = null
+        this.chartFilterTahun = null
       }
 
       if (this.date !== null) {
@@ -453,18 +457,23 @@ export default {
       }
       
       axios.get(url, { params: param }).then(function (response) {
-        parent.geojson = response.data;
-        parent.chartOptions.title.text = parent.geojson.chartTitle;
-        parent.chartOptions.xAxis = {
-          crosshair: true,
-          categories: parent.geojson.chartXSeries,
-        }; 
+        parent.geojson = response.data;        
         
-        if(!idDesa) {
-          parent.chartOptions.series.data = parent.geojson.chartSeries;
-        }
+        if(parent.chartFilterDesa === null) {
+            parent.$refs.chart.chart.update({
+            xAxis: {
+              crosshair: true,
+              categories: parent.geojson.chartXSeries,
+              title: {
+                text: 'Desa'
+              }
+            }, 
+            series: parent.geojson.chartSeries
+          })
+        }        
         
       });
+      console.log(this.chartOptions)
     },
     getLocationFromFilterMonth(features) {
       var location = [];
@@ -517,18 +526,26 @@ export default {
         idDesa: this.chartFilterDesa,
       };
 
+      if(param.tahun) this.date = null
+
       axios.get(url, { params: param }).then(function (response) {
         
-        parent.chartOptions.xAxis = {
-          crosshair: true,
-          categories: response.data.chartXSeries,
-        };
-        parent.chartOptions.series.data = response.data.chartSeries;
-      });
+        parent.$refs.chart.chart.update({
+            xAxis: {
+              crosshair: true,
+              categories: response.data.chartXSeries,
+              title: {
+                text: "Bulan"
+              }
+            },
+            series: response.data.chartSeries
+        })
 
+      });
       
       this.yearPeriode = this.chartFilterTahun
-      this.filterMonth(this.chartFilterDesa)
+      if(param.idDesa !== null) this.filterMonth(param.idDesa)
+      
     },
   },
 };
