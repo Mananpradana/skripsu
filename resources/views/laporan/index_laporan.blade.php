@@ -32,6 +32,7 @@
                                 <option value="">- Semua Tahun -</option>
                                 <option value="2022" @if($option['tahun']==='2022' ) {{'selected'}} @endif>2022</option>
                                 <option value="2023" @if($option['tahun']==='2023' ) {{'selected'}} @endif>2023</option>
+                                <option value="2024" @if($option['tahun']==='2024' ) {{'selected'}} @endif>2024</option>
                             </select>
 
                             <select class="form-select my-1" name="bulan">
